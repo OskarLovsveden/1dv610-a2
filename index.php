@@ -9,8 +9,9 @@ require_once('Database.php');
 $servername = "localhost";
 $username = "users";
 $password = "users";
+$dbName = "users";
 
-$db = new Database($servername, $username, $password);
+$db = new Database($servername, $username, $password, $dbName);
 $db->tryConnection();
 
 //MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER
