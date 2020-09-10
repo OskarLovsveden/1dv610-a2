@@ -1,32 +1,27 @@
 <?php
 
 //INCLUDE THE FILES NEEDED...
-require_once('view/LoginView.php');
-require_once('view/RegisterView.php');
-require_once('view/DateTimeView.php');
-require_once('view/LayoutView.php');
-require_once('Database.php');
+require_once('Controller/Login.php');
 
-$servername = "localhost";
-$username = "users";
-$password = "users";
-$dbName = "users";
-
-$db = new Database($servername, $username, $password, $dbName);
-$connectionString = $db->tryConnection();
+require_once('View/Login.php');
+require_once('View/Register.php');
+require_once('View/DateTime.php');
+require_once('View/Layout.php');
 
 //MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
+//error_reporting(E_All);
+//ini_set('display_errors', 'On');
 
 //CREATE OBJECTS OF THE VIEWS
-$loginView = new LoginView();
-$registerView = new RegisterView();
-$dtv = new DateTimeView();
-$lv = new LayoutView();
+$loginView = new \View\Login();
+$registerView = new \View\Register();
+$dateTimeView = new \View\DateTime();
+$layoutView = new \View\Layout();
 
-$lv->render(false, $loginView, $registerView, $dtv);
+$loginController = new \Controller\Login($loginView);
+$loginController->doLogin();
 
-if (mb_strlen($connectionString) > 0) {
-    // echo $connectionString;
-}
+$layoutView->render(false, $loginView, $registerView, $dateTimeView);
+
+// DEBUG
+// var_dump($_POST);
