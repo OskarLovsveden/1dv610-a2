@@ -1,7 +1,8 @@
 <?php
 
-class DateTimeView {
+namespace View;
 
+class DateTime {
 
 	public function show() {
 
