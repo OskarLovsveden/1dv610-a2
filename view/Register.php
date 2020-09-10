@@ -1,16 +1,16 @@
 <?php
 
-class RegisterView {
-	private static $register = 'RegisterView::Register';
-	private static $name = 'RegisterView::UserName';
-	private static $password = 'RegisterView::Password';
-	private static $repeatPassword = 'RegisterView::RepeatPassword';
-	private static $cookieName = 'RegisterView::CookieName';
-	private static $cookiePassword = 'RegisterView::CookiePassword';
-	private static $keep = 'RegisterView::KeepMeLoggedIn';
-	private static $messageId = 'RegisterView::Message';
+namespace View;
 
-	
+class Register {
+	private static $register = 'Register::Register';
+	private static $name = 'Register::UserName';
+	private static $password = 'Register::Password';
+	private static $repeatPassword = 'Register::RepeatPassword';
+	private static $cookieName = 'Register::CookieName';
+	private static $cookiePassword = 'Register::CookiePassword';
+	private static $keep = 'Register::KeepMeLoggedIn';
+	private static $messageId = 'Register::Message';
 
 	/**
 	 * Create HTTP response
@@ -23,7 +23,6 @@ class RegisterView {
 		$message = '';
 		
 		$response = $this->generateRegisterFormHTML($message);
-		//$response .= $this->generateLogoutButtonHTML($message);
 		return $response;
 	}
 	
