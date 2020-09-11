@@ -39,10 +39,10 @@ class Login {
 	}
 
 	public function loginFormValidAndSetMessage() : bool {
-		if (!$_POST[self::$name]) {
+		if (!$this->getRequestUserName()) {
 			$this->invalidInputMsg = "Username is missing";
 			return false;
-		} else if (!$_POST[self::$password]) {
+		} else if (!$this->getRequestPassword()) {
 			$this->invalidInputMsg = "Password is missing";
 			return false;
 		}
@@ -50,8 +50,8 @@ class Login {
 	}
 	
 	public function getLoginCredentials() : \Model\Credentials {
-		$username = new \Model\Username($_POST[self::$name]);
-		$password = new \Model\Password($_POST[self::$password]);
+		$username = new \Model\Username($this->getRequestUserName());
+		$password = new \Model\Password($this->getRequestPassword());
 
 		$credentials = new \Model\Credentials($username, $password);
 		return $credentials;
@@ -100,7 +100,10 @@ class Login {
 	
 	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
 	private function getRequestUserName() {
-		//RETURN REQUEST VARIABLE: USERNAME
+		return $_POST[self::$name];
 	}
 
+	private function getRequestPassword() {
+		return $_POST[self::$password];
+	}
 }
