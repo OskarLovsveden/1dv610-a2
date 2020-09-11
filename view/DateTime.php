@@ -3,10 +3,17 @@
 namespace View;
 
 class DateTime {
-
+	
 	public function show() {
+		date_default_timezone_set("Europe/Stockholm");
+	
+		$weekday = date("l");
+		$day = date("d");
+		$month = date("M");
+		$year = date("Y");
+		$time = date("h:i:s");
 
-		$timeString = 'TODO, Write servertime here...';
+		$timeString = $weekday . ", the " . $day . "th of " . $month . " " . $year . ", The time is " .  $time;
 
 		return '<p>' . $timeString . '</p>';
 	}
