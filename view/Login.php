@@ -13,6 +13,8 @@ class Login {
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
 
+	private $loginFailedMessage;
+
 	/**
 	 * Create HTTP response
 	 *
@@ -21,11 +23,7 @@ class Login {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		$message = '';
-
-		if (isset($_SESSION["sessionLoginMessageError"])) {
-			$message = $_SESSION["sessionLoginMessageError"];
-		}
+		$message = $this->loginFailedMessage;
 		
 		$response = $this->generateLoginFormHTML($message);
 		//$response .= $this->generateLogoutButtonHTML($message);
@@ -38,9 +36,9 @@ class Login {
 
 	public function isLoginCredentials() {
 		if (!mb_strlen($_POST[self::$name])) {
-			$_SESSION["sessionLoginMessageError"] = "Username missing";
+			$this->loginFailedMessage = "Username is missing";
 		} else if (!mb_strlen($_POST[self::$password])) {
-			$_SESSION["sessionLoginMessageError"] = "Password missing";
+			$this->loginFailedMessage = "Password is missing";
 		}
 	}
 
