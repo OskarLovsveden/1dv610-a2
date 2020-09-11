@@ -19,4 +19,10 @@ class User {
     public function getPassword() : string {
         return $this->password->getPassword();
     }
+
+    public function findUserByName(Credentials $credentials) : User {
+        $testUsername = new \Model\Username("Admin");
+        $testPassword = new \Model\Password(password_hash("Password"));
+        $testUser = new \Model\User($testUser, $testPassword);
+    }
 }
