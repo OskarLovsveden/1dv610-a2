@@ -8,7 +8,7 @@ class Username {
     public function __construct(string $username) {
         $this->username = $username;
         
-        if (mb_strlen($username) <= 0) {
+        if (strlen($username) <= 0) {
             throw new \Exception("Username can not be 0 or fewer chars");
         }
     }

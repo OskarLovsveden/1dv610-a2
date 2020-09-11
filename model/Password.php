@@ -8,7 +8,7 @@ class Password {
     public function __construct(string $password) {
         $this->password = $password;
 
-        if (mb_strlen($password) <= 0) {
+        if (strlen($password) <= 0) {
             throw new \Exception("Password can not be 0 or fewer chars");
         }
     }
