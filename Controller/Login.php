@@ -2,6 +2,8 @@
 
 namespace Controller;
 
+require_once('model\User');
+
 class Login {
     private $loginView;
 
@@ -13,6 +15,7 @@ class Login {
         if ($this->loginView->userWantsToLogIn()) {
             if ($this->loginView->loginFormValidAndSetMessage()) {
                 $credentials = $this->loginView->getLoginCredentials();
+                
             }
         }
     }
