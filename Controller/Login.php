@@ -11,7 +11,9 @@ class Login {
 
     public function doLogin() {
         if ($this->loginView->userWantsToLogIn()) {
-            $this->loginView->isLoginCredentials();
+            if ($this->loginView->loginFormValidAndSetMessage()) {
+                $credentials = $this->loginView->getLoginCredentials();
+            }
         }
     }
 }
