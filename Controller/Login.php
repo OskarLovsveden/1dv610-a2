@@ -11,9 +11,7 @@ class Login {
 
     public function doLogin() {
         if ($this->loginView->userWantsToLogIn()) {
-            if($this->loginView->loginFieldsValid()) {
-                echo "allt e gött";
-            }
+            $this->loginView->isLoginCredentials();
         }
     }
 }
