@@ -22,6 +22,10 @@ class Login {
 	 */
 	public function response() {
 		$message = '';
+
+		if (isset($_SESSION["sessionLoginMessageError"])) {
+			$message = $_SESSION["sessionLoginMessageError"];
+		}
 		
 		$response = $this->generateLoginFormHTML($message);
 		//$response .= $this->generateLogoutButtonHTML($message);
@@ -32,9 +36,11 @@ class Login {
 		return isset($_POST[self::$login]);
 	}
 
-	public function loginFieldsValid() : bool {
-		if ($_POST[self::$name]) {
-			# code...
+	public function isLoginCredentials() {
+		if (!mb_strlen($_POST[self::$name])) {
+			$_SESSION["sessionLoginMessageError"] = "Username missing";
+		} else if (!mb_strlen($_POST[self::$password])) {
+			$_SESSION["sessionLoginMessageError"] = "Password missing";
 		}
 	}
 
