@@ -9,7 +9,7 @@ class DateTime {
 	
 		$weekday = date("l");
 		$day = date("d");
-		$month = date("M");
+		$month = date("F");
 		$year = date("Y");
 		$time = date("h:i:s");
 
