@@ -2,6 +2,10 @@
 
 namespace View;
 
+require_once('model/Username.php');
+require_once('model/Password.php');
+require_once('model/Credentials.php');
+
 class Login {
 
 	private static $login = 'LoginView::Login';
@@ -13,7 +17,7 @@ class Login {
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
 
-	private $loginFailedMessage;
+	private $invalidInputMsg;
 
 	/**
 	 * Create HTTP response
@@ -23,7 +27,7 @@ class Login {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		$message = $this->loginFailedMessage;
+		$message = $this->invalidInputMsg;
 		
 		$response = $this->generateLoginFormHTML($message);
 		//$response .= $this->generateLogoutButtonHTML($message);
@@ -34,12 +38,23 @@ class Login {
 		return isset($_POST[self::$login]);
 	}
 
-	public function isLoginCredentials() {
+	public function loginFormValidAndSetMessage() : bool {
 		if (!$_POST[self::$name]) {
-			$this->loginFailedMessage = "Username is missing";
+			$this->invalidInputMsg = "Username is missing";
+			return false;
 		} else if (!$_POST[self::$password]) {
-			$this->loginFailedMessage = "Password is missing";
+			$this->invalidInputMsg = "Password is missing";
+			return false;
 		}
+		return true;
+	}
+	
+	public function getLoginCredentials() : \Model\Credentials {
+		$username = new \Model\Username($_POST[self::$name]);
+		$password = new \Model\Password($_POST[self::$password]);
+
+		$credentials = new \Model\Credentials($username, $password);
+		return $credentials;
 	}
 
 	/**
