@@ -6,23 +6,17 @@ class User {
 
     private $username;
     private $password;
-    private $userID;
 
-    public function __construct(Username $username, Password $password, UserID $userID) {
+    public function __construct(Username $username, Password $password) {
         $this->username = $username;
         $this->password = $password;
-        $this->userID = $userID;
     }
 
-    public function getUsername() : Username {
-        return $this->username;
+    public function getUsername() : string {
+        return $this->username->getUsername();
     }
 
-    public function getPassword() : Password {
-        return $this->password;
-    }
-
-    public function getUserID() : UserID {
-        return $this->userID;
+    public function getPassword() : string {
+        return $this->password->getPassword();
     }
 }
