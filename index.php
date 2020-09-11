@@ -3,15 +3,15 @@
 session_start();
 
 //INCLUDE THE FILES NEEDED...
-require_once('Controller/Login.php');
+require_once('controller/Login.php');
 
-require_once("View/Login.php");
-require_once('View/DateTime.php');
-require_once('View/Layout.php');
+require_once('view/Login.php');
+require_once('view/DateTime.php');
+require_once('view/Layout.php');
 
-require_once('Model/Username.php');
-require_once('Model/Password.php');
-require_once('Model/User.php');
+require_once('model/Username.php');
+require_once('model/Password.php');
+require_once('model/User.php');
 
 //MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER
 //error_reporting(E_All);
