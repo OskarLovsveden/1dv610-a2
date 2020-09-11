@@ -35,9 +35,9 @@ class Login {
 	}
 
 	public function isLoginCredentials() {
-		if (!mb_strlen($_POST[self::$name])) {
+		if (!$_POST[self::$name]) {
 			$this->loginFailedMessage = "Username is missing";
-		} else if (!mb_strlen($_POST[self::$password])) {
+		} else if (!$_POST[self::$password]) {
 			$this->loginFailedMessage = "Password is missing";
 		}
 	}
