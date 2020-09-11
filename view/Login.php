@@ -4,14 +4,14 @@ namespace View;
 
 class Login {
 
-	private static $login = 'Login::Login';
-	private static $logout = 'Login::Logout';
-	private static $name = 'Login::UserName';
-	private static $password = 'Login::Password';
-	private static $cookieName = 'Login::CookieName';
-	private static $cookiePassword = 'Login::CookiePassword';
-	private static $keep = 'Login::KeepMeLoggedIn';
-	private static $messageId = 'Login::Message';
+	private static $login = 'LoginView::Login';
+	private static $logout = 'LoginView::Logout';
+	private static $name = 'LoginView::UserName';
+	private static $password = 'LoginView::Password';
+	private static $cookieName = 'LoginView::CookieName';
+	private static $cookiePassword = 'LoginView::CookiePassword';
+	private static $keep = 'LoginView::KeepMeLoggedIn';
+	private static $messageId = 'LoginView::Message';
 
 	/**
 	 * Create HTTP response
