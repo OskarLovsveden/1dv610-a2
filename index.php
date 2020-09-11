@@ -6,7 +6,6 @@ session_start();
 require_once('Controller/Login.php');
 
 require_once('View/Login.php');
-require_once('View/Register.php');
 require_once('View/DateTime.php');
 require_once('View/Layout.php');
 
@@ -20,16 +19,16 @@ require_once('Model/User.php');
 
 // Models
 
-try {
-    // TEMP CODE
-    $username = new \Model\Username("Oskars");
-    $password = new \Model\Password("Password");
-    $user = new \Model\User($username, $password);
+// try {
+//     // TEMP CODE
+//     $username = new \Model\Username("Oskars");
+//     $password = new \Model\Password("Password");
+//     $user = new \Model\User($username, $password);
     
-    //END OF TEMP CODE
-} catch (\Exception $e) {
-    echo ($e);
-}
+//     //END OF TEMP CODE
+// } catch (\Exception $e) {
+//     echo ($e);
+// }
 
 //CREATE OBJECTS OF THE VIEWS
 $loginView = new \View\Login();
