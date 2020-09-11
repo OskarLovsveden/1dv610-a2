@@ -5,7 +5,7 @@ session_start();
 //INCLUDE THE FILES NEEDED...
 require_once('Controller/Login.php');
 
-require_once('View/Login.php');
+require_once('' . $_SERVER['DOCUMENT_ROOT'] . '/View/Login.php');
 require_once('View/DateTime.php');
 require_once('View/Layout.php');
 
@@ -32,14 +32,13 @@ require_once('Model/User.php');
 
 //CREATE OBJECTS OF THE VIEWS
 $loginView = new \View\Login();
-$registerView = new \View\Register();
 $dateTimeView = new \View\DateTime();
 $layoutView = new \View\Layout();
 
 $loginController = new \Controller\Login($loginView);
 $loginController->doLogin();
 
-$layoutView->render(false, $loginView, $registerView, $dateTimeView);
+$layoutView->render(false, $loginView, $dateTimeView);
 
 // DEBUG
 // var_dump($_POST);
