@@ -3,7 +3,7 @@
 session_start();
 
 //INCLUDE THE FILES NEEDED...
-require_once($_SERVER["DOCUMENT_ROOT"] . '/controller/Login.php');
+require_once('Controller/Login.php');
 
 require_once('view/Login.php');
 require_once('view/DateTime.php');
