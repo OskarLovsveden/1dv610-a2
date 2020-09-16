@@ -17,17 +17,13 @@ class Layout {
     . $this->renderIsLoggedIn($isLoggedIn) . 
     '<div class="container">';
 
-    // if (isset($_GET["register"])) {
-    //   $renderHTML .= '
-    //   <a href="?">Back to login</a>
-    //   <h2></h2>'
-    //   . $registerView->response();
-    // } else {
-    $renderHTML .= '
-    <a href="?register">Register a new user</a>
-    <h2></h2>'
-    . $loginView->response($isLoggedIn);
-    // }
+    if ($isLoggedIn) {
+      $renderHTML .= '<p>Welcome</p>';
+    } else {
+      $renderHTML .= '<p><a href="?register">Register a new user</a></p>';
+    }
+
+    $renderHTML .= $loginView->response($isLoggedIn);
 
     $renderHTML .= 
     $dateTimeView->show() . 
