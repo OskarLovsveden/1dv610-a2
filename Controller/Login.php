@@ -15,9 +15,11 @@ class Login {
         if ($this->loginView->userWantsToLogIn()) {
             if ($this->loginView->loginFormValidAndSetMessage()) {
                 $credentials = $this->loginView->getLoginCredentials();
-
                 try {
                     $user = \model\DAL\UserDAL::findUserByName($credentials);
+                    if($credentials->getKeepUserLoggedIn()) {
+                        $this->loginView->keepUserLoggedInSession($credentials->getUsername());
+                    }
                 } catch (\Exception $e) {
                     $this->loginView->setLoginFailedMessage("Wrong name or password");
                     error_log("Error when loading data" . $e);

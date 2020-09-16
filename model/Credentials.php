@@ -13,15 +13,15 @@ class Credentials {
         $this->keepMeLoggedIn = $keepMeLoggedIn;
     }
 
-    public function getUsername() {
+    public function getUsername() : string {
         return $this->username->getUsername();
     }
     
-    public function getPassword() {
+    public function getPassword() : string {
         return $this->password->getPassword();
     }
     
-    public function getKeepMeLoggedIn() {
+    public function getKeepUserLoggedIn() : bool {
         return $this->keepMeLoggedIn;
     }
 }

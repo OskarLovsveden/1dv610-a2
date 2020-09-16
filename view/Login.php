@@ -26,11 +26,15 @@ class Login {
 	 *
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response() {
+	public function response(bool $isLoggedIn) : string {
 		$message = $this->invalidInputMsg;
-		
-		$response = $this->generateLoginFormHTML($message);
-		//$response .= $this->generateLogoutButtonHTML($message);
+		$response = "";
+
+		if ($isLoggedIn) {
+			$response .= $this->generateLogoutButtonHTML($message);
+		} else {
+			$response .= $this->generateLoginFormHTML($message);
+		}
 		return $response;
 	}
 
@@ -49,8 +53,16 @@ class Login {
 		return true;
 	}
 
-	public function setLoginFailedMessage($message) {
+	public function setLoginFailedMessage(string $message) {
 		$this->invalidInputMsg = $message;
+	}
+
+	public function keepUserLoggedInSession(string $username) {
+		$_SESSION[self::$keep] = $username;
+	}
+
+	public function sessionExists() : bool {
+		return isset($_SESSION[self::$keep]);
 	}
 	
 	public function getLoginCredentials() : \Model\Credentials {

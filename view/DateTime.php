@@ -4,7 +4,7 @@ namespace View;
 
 class DateTime {
 	
-	public function show() {
+	public function show() : string {
 		date_default_timezone_set("Europe/Stockholm");
 	
 		$weekday = date("l");

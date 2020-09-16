@@ -4,7 +4,7 @@ namespace View;
 
 class Layout {
 
-  public function render($isLoggedIn, \View\Login $loginView, \View\DateTime $dateTimeView) {
+  public function render(bool $isLoggedIn, \View\Login $loginView, \View\DateTime $dateTimeView) {
     $renderHTML = '
     <!DOCTYPE html>
     <html>
@@ -23,10 +23,10 @@ class Layout {
     //   <h2></h2>'
     //   . $registerView->response();
     // } else {
-      $renderHTML .= '
-      <a href="?register">Register a new user</a>
-      <h2></h2>'
-      . $loginView->response();
+    $renderHTML .= '
+    <a href="?register">Register a new user</a>
+    <h2></h2>'
+    . $loginView->response($isLoggedIn);
     // }
 
     $renderHTML .= 
@@ -38,7 +38,7 @@ class Layout {
     echo $renderHTML;
   }
   
-  private function renderIsLoggedIn($isLoggedIn) {
+  private function renderIsLoggedIn(bool $isLoggedIn) {
     if ($isLoggedIn) {
       return '<h2>Logged in</h2>';
     }

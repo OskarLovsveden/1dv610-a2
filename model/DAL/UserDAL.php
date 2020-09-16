@@ -16,6 +16,6 @@ class UserDAL {
             return $testUser;
         }
 
-        throw new \Exception("Can not find user!");
+        throw new \Exception("User does not exist.");
     }
 }
