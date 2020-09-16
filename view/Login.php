@@ -40,20 +40,25 @@ class Login {
 
 	public function loginFormValidAndSetMessage() : bool {
 		if (!$this->getRequestUserName()) {
-			$this->invalidInputMsg = "Username is missing";
+			$this->setLoginFailedMessage("Username is missing");
 			return false;
 		} else if (!$this->getRequestPassword()) {
-			$this->invalidInputMsg = "Password is missing";
+			$this->setLoginFailedMessage("Password is missing");
 			return false;
 		}
 		return true;
 	}
+
+	public function setLoginFailedMessage($message) {
+		$this->invalidInputMsg = $message;
+	}
 	
 	public function getLoginCredentials() : \Model\Credentials {
 		$username = new \Model\Username($this->getRequestUserName());
-		$password = new \Model\Password($this->getRequestPassword());
+		$password = new \Model\Password(password_hash($this->getRequestPassword(), PASSWORD_BCRYPT));
+		$keepMeLoggedIn = $this->getRequestKeepMeLoggedIn();
 
-		$credentials = new \Model\Credentials($username, $password);
+		$credentials = new \Model\Credentials($username, $password, $keepMeLoggedIn);
 		return $credentials;
 	}
 
@@ -105,5 +110,9 @@ class Login {
 
 	private function getRequestPassword() {
 		return $_POST[self::$password];
+	}
+
+	private function getRequestKeepMeLoggedIn() {
+		return isset($_POST[self::$keep]);
 	}
 }
