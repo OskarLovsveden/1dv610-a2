@@ -38,46 +38,58 @@ class Login {
 		return $response;
 	}
 
-	public function userWantsToLogIn() : bool {
+	public function userWantsToLogin() : bool {
 		return isset($_POST[self::$login]);
 	}
-
+	
 	public function loginFormValidAndSetMessage() : bool {
 		if (!$this->getRequestUserName()) {
-			$this->setLoginFailedMessage("Username is missing");
+			$this->setFeedbackMessage("Username is missing");
 			return false;
 		} else if (!$this->getRequestPassword()) {
-			$this->setLoginFailedMessage("Password is missing");
+			$this->setFeedbackMessage("Password is missing");
 			return false;
 		}
 		return true;
-	}
-
-	public function setLoginFailedMessage(string $message) {
-		$this->invalidInputMsg = $message;
-	}
-
-	public function keepUserLoggedInSession(string $username) {
-		$_SESSION[self::$keep] = $username;
-	}
-
-	public function sessionExists() : bool {
-		return isset($_SESSION[self::$keep]);
 	}
 	
 	public function getLoginCredentials() : \Model\Credentials {
 		$username = new \Model\Username($this->getRequestUserName());
 		$password = new \Model\Password(password_hash($this->getRequestPassword(), PASSWORD_BCRYPT));
 		$keepMeLoggedIn = $this->getRequestKeepMeLoggedIn();
-
+		
 		$credentials = new \Model\Credentials($username, $password, $keepMeLoggedIn);
 		return $credentials;
 	}
+	
+	public function setFeedbackMessage(string $message) {
+		$this->invalidInputMsg = $message;
+	}
+	
+	public function saveUserInSession(string $username) {
+		$_SESSION[self::$name] = $username;
+	}
+	
+	public function sessionExists() : bool {
+		if(isset($_SESSION[self::$name]) && !empty($_SESSION[self::$name])) {
+			return true;
+		}
+		return false;
+	}
+	
+	public function userWantsToLogout() : bool {
+		return isset($_POST[self::$logout]);
+	}
+
+	public function unsetAndDestroySession() {
+		session_unset();
+		session_destroy();
+	}
 
 	/**
-	* Generate HTML code on the output buffer for the logout button
-	* @param $message, String output message
-	* @return  void, BUT writes to standard output!
+	 * Generate HTML code on the output buffer for the logout button
+	 * @param $message, String output message
+	 * @return  void, BUT writes to standard output!
 	*/
 	private function generateLogoutButtonHTML($message) {
 		return '
