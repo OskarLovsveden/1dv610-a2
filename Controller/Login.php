@@ -2,7 +2,7 @@
 
 namespace Controller;
 
-require_once('model\DAL\UserDAL.php');
+require_once('model\dal\UserDAL.php');
 
 class Login {
     private $loginView;
