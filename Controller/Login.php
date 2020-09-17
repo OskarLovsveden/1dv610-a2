@@ -13,16 +13,12 @@ class Login {
 
     public function doLogin() {
         if (!$this->loginView->sessionExists()) {
-            echo "No session exists";
             if ($this->loginView->userWantsToLogin()) {
-                echo "User wants to login";
                 if ($this->loginView->loginFormValidAndSetMessage()) {
-                    echo "Login form valid";
                     $credentials = $this->loginView->getLoginCredentials();
     
                     try {
                         $user = \model\DAL\UserDAL::findUserByName($credentials);
-                        echo "User exists";
                         $this->loginView->saveUserInSession($credentials->getUsername());
                         $this->loginView->setSessionInputFeedbackMessage("Welcome");
                         $this->loginView->reloadPage();
