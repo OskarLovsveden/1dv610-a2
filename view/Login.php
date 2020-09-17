@@ -29,7 +29,6 @@ class Login {
 	 */
 	public function response(bool $isLoggedIn) : string {
 		$message = $this->getSessionInputFeedbackMessage();
-		// $message = $this->sessionInputFeedbackMessage;
 		$response = "";
 
 		if ($isLoggedIn) {
@@ -66,7 +65,6 @@ class Login {
 	
 	public function setSessionInputFeedbackMessage(string $message) {
 		$_SESSION[self::$sessionInputFeedbackMessage] = $message;
-		// $this->sessionInputFeedbackMessage = $message;
 		
 		// Make sure the message survives the first request since it is removed in getSavedMessage
 		$this->sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
@@ -96,8 +94,7 @@ class Login {
 	}
 
 	public function reloadPage() {
-		header("Location: /index.php");
-		exit;
+		header("Location: /");
 	}
 
 	private function getSessionInputFeedbackMessage() : string {

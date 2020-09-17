@@ -45,9 +45,7 @@ $layoutView->render($sessionExists, $loginView, $dateTimeView);
 
 if(isset($_SERVER,$_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
     /* Sand Box */
-    echo "localhost";
     var_dump($_SESSION);
 }else{
     /* Production */
-    echo "production";
 }
