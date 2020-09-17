@@ -12,20 +12,23 @@ class Login {
     }
 
     public function doLogin() {
-        if ($this->loginView->userWantsToLogin()) {
-            if ($this->loginView->loginFormValidAndSetMessage()) {
-                $credentials = $this->loginView->getLoginCredentials();
-                try {
-                    $user = \model\DAL\UserDAL::findUserByName($credentials);
+        if (!$this->loginView->sessionExists()) {
+            if ($this->loginView->userWantsToLogin()) {
+                if ($this->loginView->loginFormValidAndSetMessage()) {
+                    $credentials = $this->loginView->getLoginCredentials();
+    
+                    try {
+                        $user = \model\DAL\UserDAL::findUserByName($credentials);
+                    } catch (\Exception $e) {
+                        error_log("Error when trying to find user" . $e);
+                        $this->loginView->setSessionInputFeedbackMessage("Wrong name or password");
+                    }
+    
                     $this->loginView->saveUserInSession($credentials->getUsername());
                     $this->loginView->setSessionInputFeedbackMessage("Welcome");
                     $this->loginView->reloadPage();
-                } catch (\Exception $e) {
-                    error_log("Error when loading data" . $e);
-                    
-                    $this->loginView->setSessionInputFeedbackMessage("Wrong name or password");
                 }
-            }
+             }
         }
     }
     
