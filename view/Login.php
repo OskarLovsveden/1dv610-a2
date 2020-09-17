@@ -17,7 +17,8 @@ class Login {
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
 
-	private $inputFeedbackMessage;
+	private static $sessionInputFeedbackMessage = 'View\\Login::sessionInputFeedbackMessage';
+	private $sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
 
 	/**
 	 * Create HTTP response
@@ -27,7 +28,8 @@ class Login {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response(bool $isLoggedIn) : string {
-		$message = $this->inputFeedbackMessage;
+		$message = $this->getSessionInputFeedbackMessage();
+		// $message = $this->sessionInputFeedbackMessage;
 		$response = "";
 
 		if ($isLoggedIn) {
@@ -44,10 +46,10 @@ class Login {
 	
 	public function loginFormValidAndSetMessage() : bool {
 		if (!$this->getRequestUserName()) {
-			$this->setInputFeedbackMessage("Username is missing");
+			$this->setSessionInputFeedbackMessage("Username is missing");
 			return false;
 		} else if (!$this->getRequestPassword()) {
-			$this->setInputFeedbackMessage("Password is missing");
+			$this->setSessionInputFeedbackMessage("Password is missing");
 			return false;
 		}
 		return true;
@@ -62,8 +64,12 @@ class Login {
 		return $credentials;
 	}
 	
-	public function setInputFeedbackMessage(string $message) {
-		$this->inputFeedbackMessage = $message;
+	public function setSessionInputFeedbackMessage(string $message) {
+		$_SESSION[self::$sessionInputFeedbackMessage] = $message;
+		// $this->sessionInputFeedbackMessage = $message;
+		
+		// Make sure the message survives the first request since it is removed in getSavedMessage
+		$this->sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
 	}
 	
 	public function saveUserInSession(string $username) {
@@ -82,9 +88,31 @@ class Login {
 	}
 
 	public function unsetAndDestroySession() {
-		session_unset();
-		session_destroy();
+		if (isset($_SESSION[self::$name])) {
+            unset($_SESSION[self::$name]);
+		} else {
+			throw new \Exception("Requires active session to unset it");
+		}
 	}
+
+	public function reloadPage() {
+		header("Location: /");
+	}
+
+	private function getSessionInputFeedbackMessage() : string {
+
+        if($this->sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest) {
+            return $_SESSION[self::$sessionInputFeedbackMessage];
+        }
+
+        if (isset($_SESSION[self::$sessionInputFeedbackMessage])) {
+            $message = $_SESSION[self::$sessionInputFeedbackMessage];
+            unset($_SESSION[self::$sessionInputFeedbackMessage]);
+
+            return $message;
+        }
+        return "";
+    }
 
 	/**
 	 * Generate HTML code on the output buffer for the logout button

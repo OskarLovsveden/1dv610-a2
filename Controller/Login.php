@@ -18,19 +18,22 @@ class Login {
                 try {
                     $user = \model\DAL\UserDAL::findUserByName($credentials);
                     $this->loginView->saveUserInSession($credentials->getUsername());
-                    $this->loginView->setInputFeedbackMessage("Welcome");
+                    $this->loginView->setSessionInputFeedbackMessage("Welcome");
+                    $this->loginView->reloadPage();
                 } catch (\Exception $e) {
-                    $this->loginView->setInputFeedbackMessage("Wrong name or password");
                     error_log("Error when loading data" . $e);
+                    
+                    $this->loginView->setSessionInputFeedbackMessage("Wrong name or password");
                 }
             }
         }
     }
-
+    
     public function doLogout() {
         if ($this->loginView->userWantsToLogout()) {
             $this->loginView->unsetAndDestroySession();
-            $this->loginView->setInputFeedbackMessage("Bye bye!");
+            $this->loginView->setSessionInputFeedbackMessage("Bye bye!");
+            $this->loginView->reloadPage();
         }
     }
 }
