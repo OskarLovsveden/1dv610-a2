@@ -50,3 +50,5 @@ if(isset($_SERVER,$_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost'
     /* Production */
     echo "production";
 }
+
+var_dump($_SESSION);

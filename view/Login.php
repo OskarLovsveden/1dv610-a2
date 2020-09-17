@@ -96,8 +96,8 @@ class Login {
 	}
 
 	public function reloadPage() {
-		header("Location: /");
-		exit();
+		header("Location: index.php");
+		exit;
 	}
 
 	private function getSessionInputFeedbackMessage() : string {
