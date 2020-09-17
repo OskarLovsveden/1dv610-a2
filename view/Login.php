@@ -17,7 +17,7 @@ class Login {
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
 
-	private $invalidInputMsg;
+	private $inputFeedbackMessage;
 
 	/**
 	 * Create HTTP response
@@ -27,7 +27,7 @@ class Login {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response(bool $isLoggedIn) : string {
-		$message = $this->invalidInputMsg;
+		$message = $this->inputFeedbackMessage;
 		$response = "";
 
 		if ($isLoggedIn) {
@@ -44,10 +44,10 @@ class Login {
 	
 	public function loginFormValidAndSetMessage() : bool {
 		if (!$this->getRequestUserName()) {
-			$this->setFeedbackMessage("Username is missing");
+			$this->setInputFeedbackMessage("Username is missing");
 			return false;
 		} else if (!$this->getRequestPassword()) {
-			$this->setFeedbackMessage("Password is missing");
+			$this->setInputFeedbackMessage("Password is missing");
 			return false;
 		}
 		return true;
@@ -62,8 +62,8 @@ class Login {
 		return $credentials;
 	}
 	
-	public function setFeedbackMessage(string $message) {
-		$this->invalidInputMsg = $message;
+	public function setInputFeedbackMessage(string $message) {
+		$this->inputFeedbackMessage = $message;
 	}
 	
 	public function saveUserInSession(string $username) {

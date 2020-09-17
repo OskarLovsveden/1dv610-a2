@@ -18,8 +18,9 @@ class Login {
                 try {
                     $user = \model\DAL\UserDAL::findUserByName($credentials);
                     $this->loginView->saveUserInSession($credentials->getUsername());
+                    $this->loginView->setInputFeedbackMessage("Welcome");
                 } catch (\Exception $e) {
-                    $this->loginView->setFeedbackMessage("Wrong name or password");
+                    $this->loginView->setInputFeedbackMessage("Wrong name or password");
                     error_log("Error when loading data" . $e);
                 }
             }
@@ -29,7 +30,7 @@ class Login {
     public function doLogout() {
         if ($this->loginView->userWantsToLogout()) {
             $this->loginView->unsetAndDestroySession();
-            $this->loginView->setFeedbackMessage("Bye bye!");
+            $this->loginView->setInputFeedbackMessage("Bye bye!");
         }
     }
 }

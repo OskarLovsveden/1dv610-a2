@@ -17,9 +17,7 @@ class Layout {
     . $this->renderIsLoggedIn($isLoggedIn) . 
     '<div class="container">';
 
-    if ($isLoggedIn) {
-      $renderHTML .= '<p>Welcome</p>';
-    } else {
+    if (!$isLoggedIn) {
       $renderHTML .= '<p><a href="?register">Register a new user</a></p>';
     }
 
