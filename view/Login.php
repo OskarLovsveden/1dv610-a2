@@ -97,6 +97,7 @@ class Login {
 
 	public function reloadPage() {
 		header("Location: /");
+		exit();
 	}
 
 	private function getSessionInputFeedbackMessage() : string {
