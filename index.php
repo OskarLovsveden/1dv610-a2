@@ -35,12 +35,15 @@ $loginView = new \View\Login();
 $dateTimeView = new \View\DateTime();
 $layoutView = new \View\Layout();
 
-
 $loginController = new \Controller\Login($loginView);
-$loginController->doLogin();
-$loginController->doLogout();
-
 $sessionExists = $loginView->sessionExists();
+
+if ($sessionExists) {
+    $loginController->doLogout();
+} else {
+    $loginController->doLogin();
+}
+
 $layoutView->render($sessionExists, $loginView, $dateTimeView);
 
 if(isset($_SERVER,$_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {

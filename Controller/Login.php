@@ -12,7 +12,7 @@ class Login {
     }
 
     public function doLogin() {
-        if (!$this->loginView->sessionExists()) {
+        // if (!$this->loginView->sessionExists()) {
             if ($this->loginView->userWantsToLogin()) {
                 if ($this->loginView->loginFormValidAndSetMessage()) {
                     $credentials = $this->loginView->getLoginCredentials();
@@ -28,14 +28,16 @@ class Login {
                     }
                 }
              }
-        }
+        // }
     }
     
     public function doLogout() {
-        if ($this->loginView->userWantsToLogout()) {
-            $this->loginView->unsetAndDestroySession();
-            $this->loginView->setSessionInputFeedbackMessage("Bye bye!");
-            $this->loginView->reloadPage();
-        }
+        // if ($this->loginView->sessionExists()) {
+            if ($this->loginView->userWantsToLogout()) {
+                $this->loginView->unsetAndDestroySession();
+                $this->loginView->setSessionInputFeedbackMessage("Bye bye!");
+                $this->loginView->reloadPage();
+            }
+        // }
     }
 }
