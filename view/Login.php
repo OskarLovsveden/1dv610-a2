@@ -74,6 +74,20 @@ class Login {
 		$_SESSION[self::$name] = $username;
 	}
 	
+	public function keepUserLoggedIn() {
+		// To set a Cookie
+		// You could use the array to store several user info in one cookie
+		$user = array(
+			"name" => "testname",
+			"pass" => "testpass",
+		);
+
+		setcookie("user", $user, time() * 7200); // Expiring after 2 hours
+		
+		// Now to log off, just set the cookie to blank and as already expired
+		// setcookie("loginCredentials", "", time() - 3600); // "Expires" 1 hour ago
+	}
+	
 	public function sessionExists() : bool {
 		if(isset($_SESSION[self::$name]) && !empty($_SESSION[self::$name])) {
 			return true;

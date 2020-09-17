@@ -2,13 +2,15 @@
 
 session_start();
 
-//INCLUDE THE FILES NEEDED...
+// Require Controller(s)
 require_once('Controller/Login.php');
 
+// Require View(s)
 require_once('view/Login.php');
 require_once('view/DateTime.php');
 require_once('view/Layout.php');
 
+// Require Model(s)
 require_once('model/Username.php');
 require_once('model/Password.php');
 require_once('model/User.php');
@@ -17,20 +19,7 @@ require_once('model/User.php');
 //error_reporting(E_All);
 //ini_set('display_errors', 'On');
 
-// Models
-
-// try {
-//     // TEMP CODE
-//     $username = new \Model\Username("Admin");
-//     $password = new \Model\Password("Password");
-//     $user = new \Model\User($username, $password);
-    
-//     //END OF TEMP CODE
-// } catch (\Exception $e) {
-//     echo ($e);
-// }
-
-//CREATE OBJECTS OF THE VIEWS
+// Create view objects
 $loginView = new \View\Login();
 $dateTimeView = new \View\DateTime();
 $layoutView = new \View\Layout();
@@ -38,17 +27,20 @@ $layoutView = new \View\Layout();
 $loginController = new \Controller\Login($loginView);
 $sessionExists = $loginView->sessionExists();
 
+// Check for active session
 if ($sessionExists) {
     $loginController->doLogout();
 } else {
     $loginController->doLogin();
 }
 
+// Render view
 $layoutView->render($sessionExists, $loginView, $dateTimeView);
 
-if(isset($_SERVER,$_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
-    /* Sand Box */
+// Check if in development or production
+if (isset($_SERVER,$_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
+    /* Development */
     var_dump($_SESSION);
-}else{
+} else {
     /* Production */
 }

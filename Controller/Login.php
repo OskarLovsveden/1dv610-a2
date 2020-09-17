@@ -12,32 +12,30 @@ class Login {
     }
 
     public function doLogin() {
-        // if (!$this->loginView->sessionExists()) {
-            if ($this->loginView->userWantsToLogin()) {
-                if ($this->loginView->loginFormValidAndSetMessage()) {
-                    $credentials = $this->loginView->getLoginCredentials();
-    
-                    try {
-                        $user = \model\DAL\UserDAL::findUserByName($credentials);
-                        $this->loginView->saveUserInSession($credentials->getUsername());
-                        $this->loginView->setSessionInputFeedbackMessage("Welcome");
-                        $this->loginView->reloadPage();
-                    } catch (\Exception $e) {
-                        error_log("Error when trying to find user" . $e);
-                        $this->loginView->setSessionInputFeedbackMessage("Wrong name or password");
-                    }
+        if ($this->loginView->userWantsToLogin()) {
+            if ($this->loginView->loginFormValidAndSetMessage()) {
+                $credentials = $this->loginView->getLoginCredentials();
+
+                try {
+                    $user = \model\DAL\UserDAL::findUserByName($credentials);
+                    $username = $credentials->getUsername();
+
+                    $this->loginView->saveUserInSession($username);
+                    $this->loginView->setSessionInputFeedbackMessage("Welcome");
+                    $this->loginView->reloadPage();
+                } catch (\Exception $e) {
+                    error_log("Something went wrong: " . $e);
+                    $this->loginView->setSessionInputFeedbackMessage("Wrong name or password");
                 }
-             }
-        // }
+            }
+         }
     }
     
     public function doLogout() {
-        // if ($this->loginView->sessionExists()) {
-            if ($this->loginView->userWantsToLogout()) {
-                $this->loginView->unsetAndDestroySession();
-                $this->loginView->setSessionInputFeedbackMessage("Bye bye!");
-                $this->loginView->reloadPage();
-            }
-        // }
+        if ($this->loginView->userWantsToLogout()) {
+            $this->loginView->unsetAndDestroySession();
+            $this->loginView->setSessionInputFeedbackMessage("Bye bye!");
+            $this->loginView->reloadPage();
+        }
     }
 }
