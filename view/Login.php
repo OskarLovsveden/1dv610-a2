@@ -18,6 +18,7 @@ class Login {
 	private static $messageId = 'LoginView::Message';
 
 	private static $sessionInputFeedbackMessage = 'View\\Login::sessionInputFeedbackMessage';
+	private static $sessionInputUserValue = 'View\\Login::sessionInputUserValue';
 	private $sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
 
 	/**
@@ -34,7 +35,13 @@ class Login {
 		if ($isLoggedIn) {
 			$response .= $this->generateLogoutButtonHTML($message);
 		} else {
-			$response .= $this->generateLoginFormHTML($message);
+			$usernameInputValue = "";
+
+			if (isset($_SESSION[self::$sessionInputUserValue])) {
+				$usernameInputValue = $_SESSION[self::$sessionInputUserValue];
+			}
+			
+			$response .= $this->generateLoginFormHTML($message, $usernameInputValue);
 		}
 		return $response;
 	}
@@ -52,6 +59,10 @@ class Login {
 			return false;
 		}
 		return true;
+	}
+
+	public function setSessionInputUserValue() {
+		$_SESSION[self::$sessionInputUserValue] = $this->getRequestUserName();
 	}
 	
 	public function getLoginCredentials() : \Model\Credentials {
@@ -77,12 +88,16 @@ class Login {
 	public function keepUserLoggedIn() {
 		// To set a Cookie
 		// You could use the array to store several user info in one cookie
-		// $user = array(
-		// 	"name" => "testname",
-		// 	"pass" => "testpass",
-		// );
-
-		// setcookie("user", $user, time() * 7200); // Expiring after 2 hours
+		$cookie_name = "user";
+		$cookie_value = "John Doe";
+		setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
+	
+		if(!isset($_COOKIE[$cookie_name])) {
+		  echo "Cookie named '" . $cookie_name . "' is not set!";
+		} else {
+		  echo "Cookie '" . $cookie_name . "' is set!<br>";
+		  echo "Value is: " . $_COOKIE[$cookie_name];
+		}
 		
 		// Now to log off, just set the cookie to blank and as already expired
 	}
@@ -144,7 +159,7 @@ class Login {
 	* @param $message, String output message
 	* @return  void, BUT writes to standard output!
 	*/
-	private function generateLoginFormHTML($message) {
+	private function generateLoginFormHTML($message, $usernameInputValue) {
 		return '
 		<form method="post" > 
 		<fieldset>
@@ -152,7 +167,7 @@ class Login {
 		<p id="' . self::$messageId . '">' . $message . '</p>
 		
 		<label for="' . self::$name . '">Username :</label>
-		<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="" />
+		<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="' . $usernameInputValue . '" />
 
 		<label for="' . self::$password . '">Password :</label>
 		<input type="password" id="' . self::$password . '" name="' . self::$password . '" />
