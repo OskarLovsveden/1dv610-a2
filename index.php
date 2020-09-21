@@ -19,10 +19,6 @@ require_once('model/User.php');
 require_once('model/DAL/CookieDAL.php');
 require_once('model/DAL/SessionDAL.php');
 
-//MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER
-//error_reporting(E_All);
-//ini_set('display_errors', 'On');
-
 // Create DAL
 $cookieDAL = new \Model\DAL\CookieDAL();
 $sessionDAL = new \Model\DAL\SessionDAL();
@@ -43,7 +39,6 @@ if ($sessionExists || $cookieExists) {
     $isLoggedIn = true;
 }
 
-// Check for active session
 if ($isLoggedIn) {
     $loginController->doLogout();
 } else {
