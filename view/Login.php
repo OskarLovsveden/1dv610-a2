@@ -32,6 +32,14 @@ class Login {
 	 */
 	public function response(bool $isLoggedIn) : string {
 		$message = $this->sessionDAL->getInputFeedbackMessage();
+
+		$sessionExists = $this->sessionDAL->isUserSessionActive();
+		$cookieExists = $this->cookieDAL->isUserCookieActive();
+
+		if (!$sessionExists && $cookieExists) {
+			$message = "Welcome back with cookie";
+		}
+
 		$response = "";
 
 		if ($isLoggedIn) {
