@@ -22,10 +22,11 @@ class SessionDAL {
     }
     
     public function isUserSessionActive() : bool {
-		if(isset($_SESSION[self::$activeUser]) && !empty($_SESSION[self::$activeUser])) {
-			return true;
-		}
-		return false;
+      if(isset($_SESSION[self::$activeUser]) && !empty($_SESSION[self::$activeUser])) {
+        return true;
+      }
+      
+	  	return false;
     }
     
     public function setUserSession(string $username) {
