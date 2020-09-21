@@ -33,17 +33,25 @@ $dateTimeView = new \View\DateTime();
 $layoutView = new \View\Layout();
 
 $loginController = new \Controller\Login($loginView, $cookieDAL, $sessionDAL);
+
 $sessionExists = $sessionDAL->isUserSessionActive();
+$cookieExists = $cookieDAL->isUserCookieActive();
+
+$isLoggedIn = false;
+
+if ($sessionExists || $cookieExists) {
+    $isLoggedIn = true;
+}
 
 // Check for active session
-if ($sessionExists) {
+if ($isLoggedIn) {
     $loginController->doLogout();
 } else {
     $loginController->doLogin();
 }
 
 // Render view
-$layoutView->render($sessionExists, $loginView, $dateTimeView);
+$layoutView->render($isLoggedIn, $loginView, $dateTimeView);
 
 // Check if in development or production
 // if(gethostbyaddr($_SERVER["REMOTE_ADDR"]))

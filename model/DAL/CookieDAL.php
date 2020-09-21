@@ -17,7 +17,7 @@ class CookieDAL {
         setcookie(self::$cookiePassword, time() - 3600);
     }
 
-    public function getCookie($cookieName) {
-        // ?
+    public function isUserCookieActive() {
+        return isset($_COOKIE[self::$cookieName]);
     }
 }
