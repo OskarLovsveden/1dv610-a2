@@ -6,9 +6,13 @@ require_once('model/DAL/UserDAL.php');
 
 class Login {
     private $loginView;
-
-    public function __construct(\View\Login $loginView) {
+    private $sessionDAL;
+    private $cookieDAL;
+    
+    public function __construct(\View\Login $loginView, \Model\DAL\CookieDAL $cookieDAL, \Model\DAL\SessionDAL $sessionDAL) {
         $this->loginView = $loginView;
+        $this->sessionDAL = $sessionDAL;
+        $this->cookieDAL = $cookieDAL;
     }
 
     public function doLogin() {
@@ -18,14 +22,23 @@ class Login {
 
                 try {
                     $user = \model\DAL\UserDAL::findUserByName($credentials);
-                    $username = $credentials->getUsername();
-
-                    $this->loginView->saveUserInSession($username);
-                    $this->loginView->setSessionInputFeedbackMessage("Welcome");
+                    
+                    $this->sessionDAL->setInputFeedbackMessage("Welcome");
+                    
+                    if ($credentials->getKeepUserLoggedIn()) {
+                        $username = $user->getUsername();
+                        $password = $user->getPassword();
+                        
+                        $this->cookieDAL->setUserCookies($username, $password);
+                    } else {
+                        $this->sessionDAL->setUserSession($user->getUsername());
+                    }
+                    
                     $this->loginView->reloadPage();
+
                 } catch (\Exception $e) {
                     error_log("Something went wrong: " . $e);
-                    $this->loginView->setSessionInputFeedbackMessage("Wrong name or password");
+                    $this->sessionDAL->setInputFeedbackMessage("Wrong name or password");
                     $this->loginView->reloadPage();
                 }
             }
@@ -34,8 +47,8 @@ class Login {
     
     public function doLogout() {
         if ($this->loginView->userWantsToLogout()) {
-            $this->loginView->unsetAndDestroySession();
-            $this->loginView->setSessionInputFeedbackMessage("Bye bye!");
+            $this->sessionDAL->unsetUserSession();
+            $this->sessionDAL->setInputFeedbackMessage("Bye bye!");
             $this->loginView->reloadPage();
         }
     }
