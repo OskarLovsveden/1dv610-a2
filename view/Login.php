@@ -12,14 +12,16 @@ class Login {
 	private static $logout = 'LoginView::Logout';
 	private static $name = 'LoginView::UserName';
 	private static $password = 'LoginView::Password';
-	private static $cookieName = 'LoginView::CookieName';
-	private static $cookiePassword = 'LoginView::CookiePassword';
 	private static $keep = 'LoginView::KeepMeLoggedIn';
 	private static $messageId = 'LoginView::Message';
 
-	private static $sessionInputFeedbackMessage = 'View\\Login::sessionInputFeedbackMessage';
-	private static $sessionInputUserValue = 'View\\Login::sessionInputUserValue';
-	private $sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
+	private $cookieDAL;
+	private $sessionDAL;
+
+	public function __construct(\Model\DAL\CookieDAL $cookieDAL, \Model\DAL\SessionDAL $sessionDAL) {
+		$this->cookieDAL = $cookieDAL;
+		$this->sessionDAL = $sessionDAL;
+	}
 
 	/**
 	 * Create HTTP response
@@ -29,7 +31,7 @@ class Login {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response(bool $isLoggedIn) : string {
-		$message = $this->getSessionInputFeedbackMessage();
+		$message = $this->sessionDAL->getInputFeedbackMessage();
 		$response = "";
 
 		if ($isLoggedIn) {
@@ -37,8 +39,8 @@ class Login {
 		} else {
 			$usernameInputValue = "";
 
-			if (isset($_SESSION[self::$sessionInputUserValue])) {
-				$usernameInputValue = $_SESSION[self::$sessionInputUserValue];
+			if ($this->sessionDAL->isInputUserValueSet()) {
+				$usernameInputValue = $this->sessionDAL->getInputUserValue();
 			}
 
 			$response .= $this->generateLoginFormHTML($message, $usernameInputValue);
@@ -52,20 +54,16 @@ class Login {
 	
 	public function loginFormValidAndSetMessage() : bool {
 		if (!$this->getRequestUserName()) {
-			$this->setSessionInputFeedbackMessage("Username is missing");
+			$this->sessionDAL->setInputFeedbackMessage("Username is missing");
 			return false;
 		} else if (!$this->getRequestPassword()) {
-			$this->setSessionInputFeedbackMessage("Password is missing");
-			$this->setSessionInputUserValue();
+			$this->sessionDAL->setInputFeedbackMessage("Password is missing");
+			$this->sessionDAL->setInputUserValue($this->getRequestUserName());
 			return false;
 		}
 		return true;
 	}
 
-	public function setSessionInputUserValue() {
-		$_SESSION[self::$sessionInputUserValue] = $this->getRequestUserName();
-	}
-	
 	public function getLoginCredentials() : \Model\Credentials {
 		$username = new \Model\Username($this->getRequestUserName());
 		$password = new \Model\Password(password_hash($this->getRequestPassword(), PASSWORD_BCRYPT));
@@ -75,71 +73,18 @@ class Login {
 		return $credentials;
 	}
 	
-	public function setSessionInputFeedbackMessage(string $message) {
-		$_SESSION[self::$sessionInputFeedbackMessage] = $message;
-		
-		// Make sure the message survives the first request since it is removed in getSavedMessage
-		$this->sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
-	}
-	
-	public function saveUserInSession(string $username) {
-		$_SESSION[self::$name] = $username;
-	}
-	
-	public function keepUserLoggedIn() {
-		// To set a Cookie
-		// You could use the array to store several user info in one cookie
-		$cookie_name = "user";
-		$cookie_value = "John Doe";
-		setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
-	
-		if(!isset($_COOKIE[$cookie_name])) {
-		  echo "Cookie named '" . $cookie_name . "' is not set!";
-		} else {
-		  echo "Cookie '" . $cookie_name . "' is set!<br>";
-		  echo "Value is: " . $_COOKIE[$cookie_name];
-		}
-		
-		// Now to log off, just set the cookie to blank and as already expired
-	}
-	
-	public function sessionExists() : bool {
-		if(isset($_SESSION[self::$name]) && !empty($_SESSION[self::$name])) {
-			return true;
-		}
-		return false;
-	}
-	
 	public function userWantsToLogout() : bool {
 		return isset($_POST[self::$logout]);
-	}
-
-	public function unsetAndDestroySession() {
-		if (isset($_SESSION[self::$name])) {
-            unset($_SESSION[self::$name]);
-		} else {
-			throw new \Exception("Requires active session to unset it");
-		}
 	}
 
 	public function reloadPage() {
 		header("Location: /");
 	}
 
-	private function getSessionInputFeedbackMessage() : string {
-
-        if($this->sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest) {
-            return $_SESSION[self::$sessionInputFeedbackMessage];
-        }
-
-        if (isset($_SESSION[self::$sessionInputFeedbackMessage])) {
-            $message = $_SESSION[self::$sessionInputFeedbackMessage];
-            unset($_SESSION[self::$sessionInputFeedbackMessage]);
-
-            return $message;
-        }
-        return "";
-    }
+	public function setUserCookies() {
+		$this->cookieDAL->setCookieUsername(self::$cookieName, $this->getRequestUserName());
+		$this->cookieDAL->setCookieUsername(self::$cookiePassword, $this->getRequestPassword());
+	}
 
 	/**
 	 * Generate HTML code on the output buffer for the logout button
