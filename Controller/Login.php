@@ -30,10 +30,9 @@ class Login {
                         $password = $user->getPassword();
                         
                         $this->cookieDAL->setUserCookies($username, $password);
-                    } else {
-                        $this->sessionDAL->setUserSession($user->getUsername());
                     }
-                    
+                
+                    $this->sessionDAL->setUserSession($user->getUsername());    
                     $this->loginView->reloadPage();
 
                 } catch (\Exception $e) {
@@ -47,7 +46,16 @@ class Login {
     
     public function doLogout() {
         if ($this->loginView->userWantsToLogout()) {
-            $this->sessionDAL->unsetUserSession();
+            if ($this->sessionDAL->isUserSessionActive()) {
+                var_dump("active session bye");
+                $this->sessionDAL->unsetUserSession();
+            }
+            
+            if ($this->cookieDAL->isUserCookieActive()) {
+                var_dump("active cookie bye");
+                $this->cookieDAL->unsetUserCookies();
+            }
+
             $this->sessionDAL->setInputFeedbackMessage("Bye bye!");
             $this->loginView->reloadPage();
         }
