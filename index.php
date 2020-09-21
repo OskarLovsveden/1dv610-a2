@@ -15,17 +15,25 @@ require_once('model/Username.php');
 require_once('model/Password.php');
 require_once('model/User.php');
 
+// Require DAL(s)
+require_once('model/DAL/CookieDAL.php');
+require_once('model/DAL/SessionDAL.php');
+
 //MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER
 //error_reporting(E_All);
 //ini_set('display_errors', 'On');
 
+// Create DAL
+$cookieDAL = new \Model\DAL\CookieDAL();
+$sessionDAL = new \Model\DAL\SessionDAL();
+
 // Create view objects
-$loginView = new \View\Login();
+$loginView = new \View\Login($cookieDAL, $sessionDAL);
 $dateTimeView = new \View\DateTime();
 $layoutView = new \View\Layout();
 
-$loginController = new \Controller\Login($loginView);
-$sessionExists = $loginView->sessionExists();
+$loginController = new \Controller\Login($loginView, $cookieDAL, $sessionDAL);
+$sessionExists = $sessionDAL->isUserSessionActive();
 
 // Check for active session
 if ($sessionExists) {
