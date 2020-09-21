@@ -38,9 +38,21 @@ if ($sessionExists) {
 $layoutView->render($sessionExists, $loginView, $dateTimeView);
 
 // Check if in development or production
+// if(gethostbyaddr($_SERVER["REMOTE_ADDR"]))
 if (isset($_SERVER,$_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
     /* Development */
     var_dump($_SESSION);
+
+    $cookie_name = "user";
+    $cookie_value = "John Doe";
+    setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 1 day
+
+    if(!isset($_COOKIE[$cookie_name])) {
+      echo "Cookie named '" . $cookie_name . "' is not set!";
+    } else {
+      echo "Cookie '" . $cookie_name . "' is set!<br>";
+      echo "Value is: " . $_COOKIE[$cookie_name];
+    }
 } else {
     /* Production */
 }

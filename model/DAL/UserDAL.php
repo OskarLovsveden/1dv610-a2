@@ -17,5 +17,6 @@ class UserDAL {
         }
 
         throw new \Exception("User does not exist.");
+        // throw new \Exception("Wrong name or password");
     }
 }
