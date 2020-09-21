@@ -28,29 +28,26 @@ class Register {
 	* @param $message, String output message
 	* @return  void, BUT writes to standard output!
 	*/
-	private function generateRegisterFormHTML($message) {
+	private function generateRegisterFormHTML() {
 		return '
-		<form method="post" > 
-		<fieldset>
-		<legend>Register a new user - Write username and password</legend>
-		<p id="' . self::$messageId . '">' . $message . '</p>
-		
-		<label for="' . self::$name . '">Username :</label>
-		<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="" />
-		</br>
-
-		<label for="' . self::$password . '">Password :</label>
-		<input type="password" id="' . self::$password . '" name="' . self::$password . '" />
-		</br>
-
-		<label for="' . self::$repeatPassword . '">Repeat password :</label>
-		<input type="repeatPassword" id="' . self::$repeatPassword . '" name="' . self::$repeatPassword . '" />
-		</br>
-		
-		<input type="submit" name="' . self::$register . '" value="Register" />
-		</fieldset>
-		</form>
-		';
+        <h2>Register new user</h2>
+        <form action="?register" method="post" enctype="multipart/form-data">
+            <fieldset>
+            <legend>Register a new user - Write username and password</legend>
+                <p id="'. self::$messageId .'"></p>
+                <label for="'. self::$name .'" >Username :</label>
+                <input type="text" size="20" name="'. self::$name .'" id="'. self::$name .'" value="" />
+                <br/>
+                <label for="'. self::$password .'" >Password  :</label>
+                <input type="password" size="20" name="'. self::$password .'" id="'. self::$password .'" value="" />
+                <br/>
+                <label for="'. self::$repeatPassword .'" >Repeat password  :</label>
+                <input type="password" size="20" name="'. self::$repeatPassword .'" id="'. self::$repeatPassword .'" value="" />
+                <br/>
+                <input id="submit" type="submit" name="'. self::$register .'"  value="Register" />
+                <br/>
+            </fieldset>
+        </form>';
 	}
 	
 	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
