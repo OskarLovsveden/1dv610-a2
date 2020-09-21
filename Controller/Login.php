@@ -47,12 +47,10 @@ class Login {
     public function doLogout() {
         if ($this->loginView->userWantsToLogout()) {
             if ($this->sessionDAL->isUserSessionActive()) {
-                var_dump("active session bye");
                 $this->sessionDAL->unsetUserSession();
             }
             
             if ($this->cookieDAL->isUserCookieActive()) {
-                var_dump("active cookie bye");
                 $this->cookieDAL->unsetUserCookies();
             }
 

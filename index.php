@@ -7,6 +7,7 @@ require_once('Controller/Login.php');
 
 // Require View(s)
 require_once('view/Login.php');
+require_once('view/Register.php');
 require_once('view/DateTime.php');
 require_once('view/Layout.php');
 
@@ -25,6 +26,7 @@ $sessionDAL = new \Model\DAL\SessionDAL();
 
 // Create view objects
 $loginView = new \View\Login($cookieDAL, $sessionDAL);
+$registerView = new \View\Register($cookieDAL, $sessionDAL);
 $dateTimeView = new \View\DateTime();
 $layoutView = new \View\Layout();
 
@@ -46,7 +48,7 @@ if ($isLoggedIn) {
 }
 
 // Render view
-$layoutView->render($isLoggedIn, $loginView, $dateTimeView);
+$layoutView->render($isLoggedIn, $loginView, $registerView, $dateTimeView);
 
 // Check if in development or production
 // if(gethostbyaddr($_SERVER["REMOTE_ADDR"]))

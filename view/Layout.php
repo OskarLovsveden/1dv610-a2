@@ -4,7 +4,7 @@ namespace View;
 
 class Layout {
 
-  public function render(bool $isLoggedIn, \View\Login $loginView, \View\DateTime $dateTimeView) {
+  public function render(bool $isLoggedIn, \View\Login $loginView, \View\Register $registerView, \View\DateTime $dateTimeView) {
     $renderHTML = '
     <!DOCTYPE html>
     <html>
@@ -17,11 +17,15 @@ class Layout {
     . $this->renderIsLoggedIn($isLoggedIn) . 
     '<div class="container">';
 
-    if (!$isLoggedIn) {
-      $renderHTML .= '<p><a href="?register">Register a new user</a></p>';
+    if (isset($_GET["register"])) {
+      $renderHTML .= $this->renderLinkForRegister();
+      $renderHTML .= $registerView->response();
+    } else {
+      if (!$isLoggedIn) {
+        $renderHTML .= $this->renderLinkForLogin();
+      }
+      $renderHTML .= $loginView->response($isLoggedIn);
     }
-
-    $renderHTML .= $loginView->response($isLoggedIn);
 
     $renderHTML .= 
     $dateTimeView->show() . 
@@ -30,6 +34,14 @@ class Layout {
     </html>';
 
     echo $renderHTML;
+  }
+
+  private function renderLinkForLogin() {
+    return '<p><a href="?register">Register a new user</a></p>';
+  }
+
+  private function renderLinkForRegister() {
+    return '<p><a href="/">Back to login</a></p>';
   }
   
   private function renderIsLoggedIn(bool $isLoggedIn) {
