@@ -26,9 +26,7 @@ class Login {
                 } catch (\Exception $e) {
                     error_log("Something went wrong: " . $e);
                     $this->loginView->setSessionInputFeedbackMessage("Wrong name or password");
-                    $this->loginView->setSessionInputUserValue();
                     $this->loginView->reloadPage();
-                    // $this->loginView->setSessionInputFeedbackMessage($e->getMessage());
                 }
             }
          }

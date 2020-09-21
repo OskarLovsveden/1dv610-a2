@@ -40,7 +40,7 @@ class Login {
 			if (isset($_SESSION[self::$sessionInputUserValue])) {
 				$usernameInputValue = $_SESSION[self::$sessionInputUserValue];
 			}
-			
+
 			$response .= $this->generateLoginFormHTML($message, $usernameInputValue);
 		}
 		return $response;
@@ -56,6 +56,7 @@ class Login {
 			return false;
 		} else if (!$this->getRequestPassword()) {
 			$this->setSessionInputFeedbackMessage("Password is missing");
+			$this->setSessionInputUserValue();
 			return false;
 		}
 		return true;
