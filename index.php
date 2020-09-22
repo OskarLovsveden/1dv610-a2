@@ -19,10 +19,17 @@ require_once('model/User.php');
 // Require DAL(s)
 require_once('model/DAL/CookieDAL.php');
 require_once('model/DAL/SessionDAL.php');
+require_once('model/DAL/UsersDAL.php');
 
 // Create DAL
 $cookieDAL = new \Model\DAL\CookieDAL();
 $sessionDAL = new \Model\DAL\SessionDAL();
+$usersDAL = new \Model\DAL\UsersDAL();
+
+$usersDAL->setCredentials();
+$usersDAL->createDatabase();
+$usersDAL->createTable();
+
 
 // Create view objects
 $loginView = new \View\Login($cookieDAL, $sessionDAL);
@@ -35,26 +42,16 @@ $loginController = new \Controller\Login($loginView, $cookieDAL, $sessionDAL);
 $sessionExists = $sessionDAL->isUserSessionActive();
 $cookieExists = $cookieDAL->isUserCookieActive();
 
-$isLoggedIn = false;
-
 if ($sessionExists || $cookieExists) {
-    $isLoggedIn = true;
-}
-
-if ($isLoggedIn) {
     $loginController->doLogout();
 } else {
     $loginController->doLogin();
 }
 
-// Render view
-$layoutView->render($isLoggedIn, $loginView, $registerView, $dateTimeView);
+$layoutView->render(($sessionExists || $cookieExists), $loginView, $registerView, $dateTimeView);
 
-// Check if in development or production
-// if(gethostbyaddr($_SERVER["REMOTE_ADDR"]))
+// TEMP
 if (isset($_SERVER,$_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
     /* Development */
     var_dump($_SESSION);
-} else {
-    /* Production */
 }
