@@ -135,7 +135,6 @@ class Login {
 		';
 	}
 	
-	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
 	private function getRequestUserName() {
 		return $_POST[self::$name];
 	}
