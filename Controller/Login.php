@@ -22,11 +22,9 @@ class Login {
 
                 try {
                     $user = \model\DAL\UserDAL::findUserByName($credentials);
-                    
+                    $username = $user->getUsername();
                     
                     if ($credentials->getKeepUserLoggedIn()) {
-                        $username = $user->getUsername();
-                        $password = $user->getPassword();
                         
                         // TODO: Figure out this tempcode
                         $str=rand(); 
@@ -39,7 +37,7 @@ class Login {
                         $this->sessionDAL->setInputFeedbackMessage("Welcome");
                     }
                 
-                    $this->sessionDAL->setUserSession($user->getUsername());    
+                    $this->sessionDAL->setUserSession($username);    
                     $this->loginView->reloadPage();
 
                 } catch (\Exception $e) {
