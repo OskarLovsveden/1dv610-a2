@@ -7,7 +7,7 @@ class SessionDAL {
     private static $sessionInputUserValue = 'Model\\DAL\\SessionDAL::sessionInputUserValue';
     private static $activeUser = 'Model\\DAL\\SessionDAL::activeUser';
 
-	private $sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
+	  private $sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
 
     public function setInputUserValue($username) {
 		$_SESSION[self::$sessionInputUserValue] = $username;
@@ -44,7 +44,7 @@ class SessionDAL {
     public function setInputFeedbackMessage(string $message) {
 		$_SESSION[self::$sessionInputFeedbackMessage] = $message;
 		
-		// Make sure the message survives the first request since it is removed in getSavedMessage
+		// Make sure the message survives the first request since it is removed in getInputFeedbackMessage
 		$this->sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
     }
     
