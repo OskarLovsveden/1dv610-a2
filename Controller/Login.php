@@ -23,21 +23,27 @@ class Login {
                 try {
                     $user = \model\DAL\UserDAL::findUserByName($credentials);
                     
-                    $this->sessionDAL->setInputFeedbackMessage("Welcome");
                     
                     if ($credentials->getKeepUserLoggedIn()) {
                         $username = $user->getUsername();
                         $password = $user->getPassword();
                         
+                        // TODO: Figure out this tempcode
+                        $str=rand(); 
+                        $password = md5($str);
+                        // end
+
                         $this->cookieDAL->setUserCookies($username, $password);
+                        $this->sessionDAL->setInputFeedbackMessage("Welcome and you will be remembered");
+                    } else {
+                        $this->sessionDAL->setInputFeedbackMessage("Welcome");
                     }
                 
                     $this->sessionDAL->setUserSession($user->getUsername());    
                     $this->loginView->reloadPage();
 
                 } catch (\Exception $e) {
-                    error_log("Something went wrong: " . $e);
-                    $this->sessionDAL->setInputFeedbackMessage("Wrong name or password");
+                    $this->sessionDAL->setInputFeedbackMessage($e->getMessage());
                     $this->loginView->reloadPage();
                 }
             }
