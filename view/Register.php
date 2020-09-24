@@ -36,8 +36,12 @@ class Register {
 			array_push($this->registerFormErrors, "Passwords do not match.");
 		}
 
+		if ($this->getRequestUserName() != strip_tags($this->getRequestUserName())) {
+			array_push($this->registerFormErrors, "Username contains invalid characters.");
+		}
+
 		if (!empty($this->registerFormErrors)) {
-			$this->sessionDAL->setInputUserValue($this->getRequestUserName());
+			$this->sessionDAL->setInputUserValue(strip_tags($this->getRequestUserName()));
 			$br_separated_errors = implode("<br>", $this->registerFormErrors);
 			throw new \Exception($br_separated_errors);
 		}
