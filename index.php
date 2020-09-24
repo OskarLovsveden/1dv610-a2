@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 // Require Controller(s)
 require_once('Controller/Login.php');
 require_once('Controller/Register.php');
@@ -24,9 +22,12 @@ require_once('model/DAL/UsersDAL.php');
 
 // Create DAL
 $cookieDAL = new \Model\DAL\CookieDAL();
-$sessionDAL = new \Model\DAL\SessionDAL();
-$usersDAL = new \Model\DAL\UsersDAL();
 
+$sessionDAL = new \Model\DAL\SessionDAL();
+// $sessionDAL->startSession();
+session_start();
+
+$usersDAL = new \Model\DAL\UsersDAL();
 $usersDAL->setCredentials();
 $usersDAL->createDatabase();
 $usersDAL->createTable();

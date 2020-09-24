@@ -31,7 +31,8 @@ class Login {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response(bool $isLoggedIn) {
-		$message = $this->sessionDAL->getInputFeedbackMessage();
+		$message = $this->sessionDAL->getInputFeedbackMessage(); // Using variable
+		// $message = $this->sessionDAL->displayInputFeedback(); // Using array
 
 		$sessionExists = $this->sessionDAL->isUserSessionActive();
 		$cookieExists = $this->cookieDAL->isUserCookieActive();
@@ -60,16 +61,14 @@ class Login {
 		return isset($_POST[self::$login]);
 	}
 
-	public function loginFormValidAndSetMessage(): bool {
+	public function loginFormValidAndSetMessage() {
 		if (!$this->getRequestUserName()) {
-			$this->sessionDAL->setInputFeedbackMessage("Username is missing");
-			return false;
-		} else if (!$this->getRequestPassword()) {
-			$this->sessionDAL->setInputFeedbackMessage("Password is missing");
 			$this->sessionDAL->setInputUserValue($this->getRequestUserName());
-			return false;
+			throw new \Exception("Username is missing");
+		} else if (!$this->getRequestPassword()) {
+			$this->sessionDAL->setInputUserValue($this->getRequestUserName());
+			throw new \Exception("Password is missing");
 		}
-		return true;
 	}
 
 	public function getLoginCredentials(): \Model\Credentials {

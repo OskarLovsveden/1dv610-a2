@@ -17,32 +17,30 @@ class Login {
 
     public function doLogin() {
         if ($this->loginView->userWantsToLogin()) {
-            if ($this->loginView->loginFormValidAndSetMessage()) {
+            try {
+                $this->loginView->loginFormValidAndSetMessage();
                 $credentials = $this->loginView->getLoginCredentials();
+                $user = \model\DAL\UserDAL::findUserByName($credentials);
+                $username = $user->getUsername();
 
-                try {
-                    $user = \model\DAL\UserDAL::findUserByName($credentials);
-                    $username = $user->getUsername();
+                if ($credentials->getKeepUserLoggedIn()) {
 
-                    if ($credentials->getKeepUserLoggedIn()) {
+                    // TODO: Figure out this tempcode
+                    $str = rand();
+                    $password = md5($str);
+                    // end
 
-                        // TODO: Figure out this tempcode
-                        $str = rand();
-                        $password = md5($str);
-                        // end
-
-                        $this->cookieDAL->setUserCookies($username, $password);
-                        $this->sessionDAL->setInputFeedbackMessage("Welcome and you will be remembered");
-                    } else {
-                        $this->sessionDAL->setInputFeedbackMessage("Welcome");
-                    }
-
-                    $this->sessionDAL->setUserSession($username);
-                    $this->loginView->reloadPage();
-                } catch (\Exception $e) {
-                    $this->sessionDAL->setInputFeedbackMessage($e->getMessage());
-                    $this->loginView->reloadPage();
+                    $this->cookieDAL->setUserCookies($username, $password);
+                    $this->sessionDAL->setInputFeedbackMessage("Welcome and you will be remembered");
+                } else {
+                    $this->sessionDAL->setInputFeedbackMessage("Welcome");
                 }
+
+                $this->sessionDAL->setUserSession($username);
+                $this->loginView->reloadPage();
+            } catch (\Exception $e) {
+                $this->sessionDAL->setInputFeedbackMessage($e->getMessage());
+                $this->loginView->reloadPage();
             }
         }
     }

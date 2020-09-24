@@ -9,10 +9,43 @@ class Register {
 	private static $passwordRepeat = 'RegisterView::PasswordRepeat';
 	private static $messageId = 'RegisterView::Message';
 
+	private $registerFormErrors = array();
+
+	private $cookieDAL;
+	private $sessionDAL;
+
+	public function __construct(\Model\DAL\CookieDAL $cookieDAL, \Model\DAL\SessionDAL $sessionDAL) {
+		$this->cookieDAL = $cookieDAL;
+		$this->sessionDAL = $sessionDAL;
+	}
 
 	public function userWantsToRegister() {
-		# code...
+		return isset($_POST[self::$register]);
 	}
+
+	public function registerFormValidAndSetMessage() {
+		if (strlen($this->getRequestUserName()) < 3) {
+			array_push($this->registerFormErrors, "Username has too few characters, at least 3 characters.");
+		}
+
+		if (strlen($this->getRequestPassword()) < 6) {
+			array_push($this->registerFormErrors, "Password has too few characters, at least 6 characters.");
+		}
+
+		if ($this->getRequestPassword() != $this->getRequestPasswordRepeat()) {
+			array_push($this->registerFormErrors, "Passwords do not match.");
+		}
+
+		if (!empty($this->registerFormErrors)) {
+			$br_separated_errors = implode("</br>", $this->registerFormErrors);
+			throw new \Exception($br_separated_errors);
+		}
+	}
+
+	public function reloadPage() {
+		header("Location: /?register");
+	}
+
 
 	/**
 	 * Create HTTP response
@@ -22,7 +55,7 @@ class Register {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response() {
-		$message = '';
+		$message = $this->sessionDAL->getInputFeedbackMessage(); // Using variable
 
 		$response = $this->generateRegisterFormHTML($message);
 		return $response;
@@ -33,13 +66,13 @@ class Register {
 	 * @param $message, String output message
 	 * @return  void, BUT writes to standard output!
 	 */
-	private function generateRegisterFormHTML() {
+	private function generateRegisterFormHTML($message) {
 		return '
         <h2>Register new user</h2>
         <form action="?register" method="post" enctype="multipart/form-data">
             <fieldset>
             <legend>Register a new user - Write username and password</legend>
-                <p id="' . self::$messageId . '"></p>
+                <p id="' . self::$messageId . '">' . $message . '</p>
                 <label for="' . self::$name . '" >Username :</label>
                 <input type="text" size="20" name="' . self::$name . '" id="' . self::$name . '" value="" />
                 <br/>
@@ -57,6 +90,12 @@ class Register {
 
 	//CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
 	private function getRequestUserName() {
-		//RETURN REQUEST VARIABLE: USERNAME
+		return $_POST[self::$name];
+	}
+	private function getRequestPassword() {
+		return $_POST[self::$password];
+	}
+	private function getRequestPasswordRepeat() {
+		return $_POST[self::$passwordRepeat];
 	}
 }

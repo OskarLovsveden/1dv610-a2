@@ -9,6 +9,13 @@ class SessionDAL {
 
   private $sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
 
+  // public function startSession() {
+  //   session_start();
+  //   if ($this->sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest) {
+  //     $_SESSION[self::$sessionInputFeedbackMessage] = array();
+  //   }
+  // }
+
   public function setInputUserValue($username) {
     $_SESSION[self::$sessionInputUserValue] = $username;
   }
@@ -37,29 +44,55 @@ class SessionDAL {
     if (isset($_SESSION[self::$activeUser])) {
       unset($_SESSION[self::$activeUser]);
     } else {
-      throw new \Exception("Requires active user session to unset it");
+      throw new \Exception("Requires activeUser session to unset it");
     }
   }
 
   public function setInputFeedbackMessage(string $message) {
-    $_SESSION[self::$sessionInputFeedbackMessage] = $message;
+    $_SESSION[self::$sessionInputFeedbackMessage] = $message; //Using variable
+
+    // Using array
+    // $messageArray = array();
+    // $messageArray = $_SESSION[self::$sessionInputFeedbackMessage];
+    // array_push($messageArray, $message);
+    // $_SESSION[self::$sessionInputFeedbackMessage] = $messageArray;
 
     // Make sure the message survives the first request since it is removed in getInputFeedbackMessage
     $this->sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
   }
 
-  public function getInputFeedbackMessage(): string {
+  public function unsetInputFeedbackMessage() {
+    if (isset($_SESSION[self::$sessionInputFeedbackMessage])) {
+      unset($_SESSION[self::$sessionInputFeedbackMessage]); // Using variable
+      // $_SESSION[self::$sessionInputFeedbackMessage] = array(); // Using array
+    } else {
+      throw new \Exception("Requires InputFeedbackMessage session to unset it");
+    }
+  }
 
+  public function getInputFeedbackMessage() {
     if ($this->sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest) {
       return $_SESSION[self::$sessionInputFeedbackMessage];
     }
 
     if (isset($_SESSION[self::$sessionInputFeedbackMessage])) {
       $message = $_SESSION[self::$sessionInputFeedbackMessage];
-      unset($_SESSION[self::$sessionInputFeedbackMessage]);
+      $this->unsetInputFeedbackMessage();
 
       return $message;
     }
     return "";
   }
+
+  // public function displayInputFeedback() {
+  //   $message = "";
+
+  //   $messageArray = $this->getInputFeedbackMessage();
+  //   foreach ($messageArray as $value) {
+  //     if (strlen($message) != 0) {
+  //       $message .= "</br>";
+  //     }
+  //     $message .= $value;
+  //   }
+  // }
 }
