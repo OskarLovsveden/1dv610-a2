@@ -37,7 +37,7 @@ class Register {
 		}
 
 		if (!empty($this->registerFormErrors)) {
-			$br_separated_errors = implode("</br>", $this->registerFormErrors);
+			$br_separated_errors = implode("<br/>", $this->registerFormErrors);
 			throw new \Exception($br_separated_errors);
 		}
 	}
