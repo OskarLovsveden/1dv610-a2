@@ -7,7 +7,7 @@ class Credentials {
     private $password;
     private $keepMeLoggedIn;
 
-    public function __construct(Username $username, Password $password, bool $keepMeLoggedIn) {
+    public function __construct(Username $username, Password $password, bool $keepMeLoggedIn = false) {
         $this->username = $username;
         $this->password = $password;
         $this->keepMeLoggedIn = $keepMeLoggedIn;

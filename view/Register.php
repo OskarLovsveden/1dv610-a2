@@ -24,27 +24,38 @@ class Register {
 	}
 
 	public function registerFormValidAndSetMessage() {
-		if (strlen($this->getRequestUserName()) < 3) {
+		$username = $this->getRequestUserName();
+		$password = $this->getRequestPassword();
+		$passwordRepeat = $this->getRequestPasswordRepeat();
+
+		if (strlen($username) < 3) {
 			array_push($this->registerFormErrors, "Username has too few characters, at least 3 characters.");
 		}
 
-		if (strlen($this->getRequestPassword()) < 6) {
+		if (strlen($password) < 6) {
 			array_push($this->registerFormErrors, "Password has too few characters, at least 6 characters.");
 		}
 
-		if ($this->getRequestPassword() != $this->getRequestPasswordRepeat()) {
+		if ($password != $passwordRepeat) {
 			array_push($this->registerFormErrors, "Passwords do not match.");
 		}
 
-		if ($this->getRequestUserName() != strip_tags($this->getRequestUserName())) {
+		if ($username != strip_tags($username)) {
 			array_push($this->registerFormErrors, "Username contains invalid characters.");
 		}
 
 		if (!empty($this->registerFormErrors)) {
-			$this->sessionDAL->setInputUserValue(strip_tags($this->getRequestUserName()));
+			$this->sessionDAL->setInputUserValue(strip_tags($username));
 			$br_separated_errors = implode("<br>", $this->registerFormErrors);
 			throw new \Exception($br_separated_errors);
 		}
+	}
+
+	public function getUserToRegister() {
+		$username = new \Model\Username($this->getRequestUserName());
+		$password = new \Model\Password($this->getRequestPassword());
+
+		return new \Model\User($username, $password);
 	}
 
 	public function reloadPage() {

@@ -20,7 +20,7 @@ class Login {
             try {
                 $this->loginView->loginFormValidAndSetMessage();
                 $credentials = $this->loginView->getLoginCredentials();
-                $user = \model\DAL\UserDAL::findUserByName($credentials);
+                $user = \model\DAL\UserDAL::findExistingUser($credentials);
                 $username = $user->getUsername();
 
                 if ($credentials->getKeepUserLoggedIn()) {

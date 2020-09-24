@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 // Require Controller(s)
 require_once('Controller/Login.php');
@@ -16,21 +17,17 @@ require_once('model/Password.php');
 require_once('model/User.php');
 
 // Require DAL(s)
+require_once('model/DAL/Database.php');
 require_once('model/DAL/CookieDAL.php');
 require_once('model/DAL/SessionDAL.php');
-require_once('model/DAL/UsersDAL.php');
+require_once('model/DAL/UserDAL.php');
 
 // Create DAL
 $cookieDAL = new \Model\DAL\CookieDAL();
-
 $sessionDAL = new \Model\DAL\SessionDAL();
-// $sessionDAL->startSession();
-session_start();
 
-$usersDAL = new \Model\DAL\UsersDAL();
-$usersDAL->setCredentials();
-$usersDAL->createDatabase();
-$usersDAL->createTable();
+$database = new \Model\DAL\Database();
+$userDAL = new \Model\DAL\UserDAL($database);
 
 // Create view objects
 $loginView = new \View\Login($cookieDAL, $sessionDAL);
@@ -39,7 +36,7 @@ $dateTimeView = new \View\DateTime();
 $layoutView = new \View\Layout();
 
 $loginController = new \Controller\Login($loginView, $cookieDAL, $sessionDAL);
-$registerController = new \Controller\Register($registerView, $cookieDAL, $sessionDAL);
+$registerController = new \Controller\Register($registerView, $userDAL, $sessionDAL);
 
 $sessionExists = $sessionDAL->isUserSessionActive();
 $cookieExists = $cookieDAL->isUserCookieActive();
