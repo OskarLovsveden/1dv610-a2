@@ -62,11 +62,11 @@ class Login {
 	}
 
 	public function loginFormValidAndSetMessage() {
+		$this->sessionDAL->setInputUserValue($this->getRequestUserName());
+
 		if (!$this->getRequestUserName()) {
-			$this->sessionDAL->setInputUserValue($this->getRequestUserName());
 			throw new \Exception("Username is missing");
 		} else if (!$this->getRequestPassword()) {
-			$this->sessionDAL->setInputUserValue($this->getRequestUserName());
 			throw new \Exception("Password is missing");
 		}
 	}

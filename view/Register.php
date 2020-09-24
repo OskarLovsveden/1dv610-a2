@@ -37,7 +37,8 @@ class Register {
 		}
 
 		if (!empty($this->registerFormErrors)) {
-			$br_separated_errors = implode("<br/>", $this->registerFormErrors);
+			$this->sessionDAL->setInputUserValue($this->getRequestUserName());
+			$br_separated_errors = implode("<br>", $this->registerFormErrors);
 			throw new \Exception($br_separated_errors);
 		}
 	}
@@ -57,7 +58,13 @@ class Register {
 	public function response() {
 		$message = $this->sessionDAL->getInputFeedbackMessage(); // Using variable
 
-		$response = $this->generateRegisterFormHTML($message);
+		$usernameInputValue = "";
+
+		if ($this->sessionDAL->isInputUserValueSet()) {
+			$usernameInputValue = $this->sessionDAL->getInputUserValue();
+		}
+
+		$response = $this->generateRegisterFormHTML($message, $usernameInputValue);
 		return $response;
 	}
 
@@ -66,7 +73,7 @@ class Register {
 	 * @param $message, String output message
 	 * @return  void, BUT writes to standard output!
 	 */
-	private function generateRegisterFormHTML($message) {
+	private function generateRegisterFormHTML($message, $usernameInputValue) {
 		return '
         <h2>Register new user</h2>
         <form action="?register" method="post" enctype="multipart/form-data">
@@ -74,7 +81,7 @@ class Register {
             <legend>Register a new user - Write username and password</legend>
                 <p id="' . self::$messageId . '">' . $message . '</p>
                 <label for="' . self::$name . '" >Username :</label>
-                <input type="text" size="20" name="' . self::$name . '" id="' . self::$name . '" value="" />
+                <input type="text" size="20" name="' . self::$name . '" id="' . self::$name . '" value="' . $usernameInputValue . '" />
                 <br/>
                 <label for="' . self::$password . '" >Password  :</label>
                 <input type="password" size="20" name="' . self::$password . '" id="' . self::$password . '" value="" />
