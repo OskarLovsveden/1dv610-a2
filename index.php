@@ -4,6 +4,7 @@ session_start();
 
 // Require Controller(s)
 require_once('Controller/Login.php');
+require_once('Controller/Register.php');
 
 // Require View(s)
 require_once('view/Login.php');
@@ -30,7 +31,6 @@ $usersDAL->setCredentials();
 $usersDAL->createDatabase();
 $usersDAL->createTable();
 
-
 // Create view objects
 $loginView = new \View\Login($cookieDAL, $sessionDAL);
 $registerView = new \View\Register($cookieDAL, $sessionDAL);
@@ -38,6 +38,7 @@ $dateTimeView = new \View\DateTime();
 $layoutView = new \View\Layout();
 
 $loginController = new \Controller\Login($loginView, $cookieDAL, $sessionDAL);
+$registerController = new \Controller\Register($registerView, $cookieDAL, $sessionDAL);
 
 $sessionExists = $sessionDAL->isUserSessionActive();
 $cookieExists = $cookieDAL->isUserCookieActive();
@@ -45,13 +46,17 @@ $cookieExists = $cookieDAL->isUserCookieActive();
 if ($sessionExists || $cookieExists) {
     $loginController->doLogout();
 } else {
-    $loginController->doLogin();
+    if (isset($_GET["register"])) {
+        $registerController->doRegister();
+    } else {
+        $loginController->doLogin();
+    }
 }
 
 $layoutView->render(($sessionExists || $cookieExists), $loginView, $registerView, $dateTimeView);
 
 // TEMP
-if (isset($_SERVER,$_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
+if (isset($_SERVER, $_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
     /* Development */
     var_dump($_SESSION);
 }

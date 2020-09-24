@@ -14,8 +14,8 @@ class Layout {
     </head>
     <body>
     <h1>Assignment 2</h1>'
-    . $this->renderIsLoggedIn($isLoggedIn) . 
-    '<div class="container">';
+      . $this->renderIsLoggedIn($isLoggedIn) .
+      '<div class="container">';
 
     if (isset($_GET["register"])) {
       $renderHTML .= $this->renderLinkForRegister();
@@ -27,9 +27,9 @@ class Layout {
       $renderHTML .= $loginView->response($isLoggedIn);
     }
 
-    $renderHTML .= 
-    $dateTimeView->show() . 
-    '</div>
+    $renderHTML .=
+      $dateTimeView->show() .
+      '</div>
     </body>
     </html>';
 
@@ -43,12 +43,11 @@ class Layout {
   private function renderLinkForRegister() {
     return '<p><a href="/">Back to login</a></p>';
   }
-  
+
   private function renderIsLoggedIn(bool $isLoggedIn) {
     if ($isLoggedIn) {
       return '<h2>Logged in</h2>';
-    }
-    else {
+    } else {
       return '<h2>Not logged in</h2>';
     }
   }

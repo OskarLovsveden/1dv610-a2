@@ -8,7 +8,7 @@ class Login {
     private $loginView;
     private $sessionDAL;
     private $cookieDAL;
-    
+
     public function __construct(\View\Login $loginView, \Model\DAL\CookieDAL $cookieDAL, \Model\DAL\SessionDAL $sessionDAL) {
         $this->loginView = $loginView;
         $this->sessionDAL = $sessionDAL;
@@ -23,11 +23,11 @@ class Login {
                 try {
                     $user = \model\DAL\UserDAL::findUserByName($credentials);
                     $username = $user->getUsername();
-                    
+
                     if ($credentials->getKeepUserLoggedIn()) {
-                        
+
                         // TODO: Figure out this tempcode
-                        $str=rand(); 
+                        $str = rand();
                         $password = md5($str);
                         // end
 
@@ -36,24 +36,23 @@ class Login {
                     } else {
                         $this->sessionDAL->setInputFeedbackMessage("Welcome");
                     }
-                
-                    $this->sessionDAL->setUserSession($username);    
-                    $this->loginView->reloadPage();
 
+                    $this->sessionDAL->setUserSession($username);
+                    $this->loginView->reloadPage();
                 } catch (\Exception $e) {
                     $this->sessionDAL->setInputFeedbackMessage($e->getMessage());
                     $this->loginView->reloadPage();
                 }
             }
-         }
+        }
     }
-    
+
     public function doLogout() {
         if ($this->loginView->userWantsToLogout()) {
             if ($this->sessionDAL->isUserSessionActive()) {
                 $this->sessionDAL->unsetUserSession();
             }
-            
+
             if ($this->cookieDAL->isUserCookieActive()) {
                 $this->cookieDAL->unsetUserCookies();
             }

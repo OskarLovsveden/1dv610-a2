@@ -5,11 +5,11 @@ namespace Model\DAL;
 class CookieDAL {
 
     private static $cookieName = 'LoginView::CookieName';
-	private static $cookiePassword = 'LoginView::CookiePassword';
+    private static $cookiePassword = 'LoginView::CookiePassword';
 
     public function setUserCookies($cookieUserName, $cookiePassword) {
-		setcookie(self::$cookieName, $cookieUserName, time() + (86400 * 30), "/");
-		setcookie(self::$cookiePassword, $cookiePassword, time() + (86400 * 30), "/");
+        setcookie(self::$cookieName, $cookieUserName, time() + (86400 * 30), "/");
+        setcookie(self::$cookiePassword, $cookiePassword, time() + (86400 * 30), "/");
     }
 
     public function unsetUserCookies() {

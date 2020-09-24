@@ -12,11 +12,11 @@ class User {
         $this->password = $password;
     }
 
-    public function getUsername() : string {
+    public function getUsername(): string {
         return $this->username->getUsername();
     }
 
-    public function getPassword() : string {
+    public function getPassword(): string {
         return $this->password->getPassword();
     }
 }

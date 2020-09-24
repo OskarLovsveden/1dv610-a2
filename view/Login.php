@@ -30,7 +30,7 @@ class Login {
 	 *
 	 * @return  void BUT writes to standard output and cookies!
 	 */
-	public function response(bool $isLoggedIn) : string {
+	public function response(bool $isLoggedIn) {
 		$message = $this->sessionDAL->getInputFeedbackMessage();
 
 		$sessionExists = $this->sessionDAL->isUserSessionActive();
@@ -56,11 +56,11 @@ class Login {
 		return $response;
 	}
 
-	public function userWantsToLogin() : bool {
+	public function userWantsToLogin(): bool {
 		return isset($_POST[self::$login]);
 	}
-	
-	public function loginFormValidAndSetMessage() : bool {
+
+	public function loginFormValidAndSetMessage(): bool {
 		if (!$this->getRequestUserName()) {
 			$this->sessionDAL->setInputFeedbackMessage("Username is missing");
 			return false;
@@ -72,16 +72,16 @@ class Login {
 		return true;
 	}
 
-	public function getLoginCredentials() : \Model\Credentials {
+	public function getLoginCredentials(): \Model\Credentials {
 		$username = new \Model\Username($this->getRequestUserName());
 		$password = new \Model\Password(password_hash($this->getRequestPassword(), PASSWORD_BCRYPT));
 		$keepMeLoggedIn = $this->getRequestKeepMeLoggedIn();
-		
+
 		$credentials = new \Model\Credentials($username, $password, $keepMeLoggedIn);
 		return $credentials;
 	}
-	
-	public function userWantsToLogout() : bool {
+
+	public function userWantsToLogout(): bool {
 		return isset($_POST[self::$logout]);
 	}
 
@@ -89,30 +89,25 @@ class Login {
 		header("Location: /");
 	}
 
-	public function setUserCookies() {
-		$this->cookieDAL->setCookieUsername(self::$cookieName, $this->getRequestUserName());
-		$this->cookieDAL->setCookieUsername(self::$cookiePassword, $this->getRequestPassword());
+	/**
+	 * Generate HTML code on the output buffer for the logout button
+	 * @param $message, String output message
+	 * @return  void, BUT writes to standard output!
+	 */
+	private function generateLogoutButtonHTML($message) {
+		return '
+		<form  method="post" >
+		<p id="' . self::$messageId . '">' . $message . '</p>
+		<input type="submit" name="' . self::$logout . '" value="logout"/>
+		</form>
+		';
 	}
 
 	/**
 	 * Generate HTML code on the output buffer for the logout button
 	 * @param $message, String output message
 	 * @return  void, BUT writes to standard output!
-	*/
-	private function generateLogoutButtonHTML($message) {
-		return '
-		<form  method="post" >
-		<p id="' . self::$messageId . '">' . $message .'</p>
-		<input type="submit" name="' . self::$logout . '" value="logout"/>
-		</form>
-		';
-	}
-	
-	/**
-	* Generate HTML code on the output buffer for the logout button
-	* @param $message, String output message
-	* @return  void, BUT writes to standard output!
-	*/
+	 */
 	private function generateLoginFormHTML($message, $usernameInputValue) {
 		return '
 		<form method="post" > 
@@ -134,7 +129,7 @@ class Login {
 		</form>
 		';
 	}
-	
+
 	private function getRequestUserName() {
 		return $_POST[self::$name];
 	}

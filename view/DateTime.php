@@ -3,10 +3,10 @@
 namespace View;
 
 class DateTime {
-	
-	public function show() : string {
+
+	public function show(): string {
 		date_default_timezone_set("Europe/Stockholm");
-	
+
 		$weekday = date("l");
 		$day = date("d");
 		$month = date("F");
