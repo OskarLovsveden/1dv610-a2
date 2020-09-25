@@ -35,7 +35,7 @@ $registerView = new \View\Register($cookieDAL, $sessionDAL);
 $dateTimeView = new \View\DateTime();
 $layoutView = new \View\Layout();
 
-$loginController = new \Controller\Login($loginView, $cookieDAL, $sessionDAL);
+$loginController = new \Controller\Login($loginView, $cookieDAL, $sessionDAL, $userDAL);
 $registerController = new \Controller\Register($registerView, $userDAL, $sessionDAL);
 
 $sessionExists = $sessionDAL->isUserSessionActive();

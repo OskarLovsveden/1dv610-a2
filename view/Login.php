@@ -73,7 +73,7 @@ class Login {
 
 	public function getLoginCredentials(): \Model\Credentials {
 		$username = new \Model\Username($this->getRequestUserName());
-		$password = new \Model\Password(password_hash($this->getRequestPassword(), PASSWORD_BCRYPT));
+		$password = new \Model\Password($this->getRequestPassword());
 		$keepMeLoggedIn = $this->getRequestKeepMeLoggedIn();
 
 		$credentials = new \Model\Credentials($username, $password, $keepMeLoggedIn);

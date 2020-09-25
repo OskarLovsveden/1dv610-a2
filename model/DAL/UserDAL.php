@@ -16,7 +16,12 @@ class UserDAL {
         $password = password_hash($user->getPassword(), PASSWORD_BCRYPT);
 
         // Create connection
-        $connection = new \mysqli($this->database->getHostname(), $this->database->getUsername(), $this->database->getPassword(), $this->database->getDatabase());
+        $connection = new \mysqli(
+            $this->database->getHostname(),
+            $this->database->getUsername(),
+            $this->database->getPassword(),
+            $this->database->getDatabase()
+        );
 
         // Check connection
         if ($connection->connect_error) {
@@ -35,18 +40,35 @@ class UserDAL {
         $connection->close();
     }
 
-    public static function findExistingUser(\Model\Credentials $credentials): \Model\User {
+    public function findExistingUser(\Model\Credentials $credentials) {
         $username = $credentials->getUsername();
         $password = $credentials->getPassword();
 
-        // TODO: fix TEMP CODE "User exists" once registration is in place
-        if ($username == "Admin" && password_verify("Password", $password)) {
-            $testUserName = new \Model\Username($username);
-            $testPassword = new \Model\Password($password);
+        // Create connection
+        $connection = new \mysqli(
+            $this->database->getHostname(),
+            $this->database->getUsername(),
+            $this->database->getPassword(),
+            $this->database->getDatabase()
+        );
 
-            $testUser = new \Model\User($testUserName, $testPassword);
-            return $testUser;
+        // Check connection
+        if ($connection->connect_error) {
+            die("Connection failed: " . $connection->connect_error);
         }
+
+        $sql = "SELECT username, password FROM users WHERE username = '" . $username . "'";
+        $result = $connection->query($sql);
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            if (password_verify($password, $row["password"])) {
+                return new \Model\Username($row["username"]);
+            }
+        } else {
+            // 0 results
+        }
+        $connection->close();
         // end
 
         throw new \Exception("Wrong name or password");

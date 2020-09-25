@@ -8,11 +8,13 @@ class Login {
     private $loginView;
     private $sessionDAL;
     private $cookieDAL;
+    private $userDAL;
 
-    public function __construct(\View\Login $loginView, \Model\DAL\CookieDAL $cookieDAL, \Model\DAL\SessionDAL $sessionDAL) {
+    public function __construct(\View\Login $loginView, \Model\DAL\CookieDAL $cookieDAL, \Model\DAL\SessionDAL $sessionDAL, \Model\DAL\UserDAL $userDAL) {
         $this->loginView = $loginView;
         $this->sessionDAL = $sessionDAL;
         $this->cookieDAL = $cookieDAL;
+        $this->userDAL = $userDAL;
     }
 
     public function doLogin() {
@@ -20,8 +22,8 @@ class Login {
             try {
                 $this->loginView->loginFormValidAndSetMessage();
                 $credentials = $this->loginView->getLoginCredentials();
-                $user = \model\DAL\UserDAL::findExistingUser($credentials);
-                $username = $user->getUsername();
+                $username = $this->userDAL->findExistingUser($credentials);
+                $username = $username->getUsername();
 
                 if ($credentials->getKeepUserLoggedIn()) {
 
