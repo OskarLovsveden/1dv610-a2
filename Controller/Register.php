@@ -19,9 +19,11 @@ class Register {
                 $this->registerView->registerFormValidAndSetMessage();
                 $user = $this->registerView->getUserToRegister();
                 $this->userDAL->registerUser($user);
+                $this->sessionDAL->setInputUserValue($user->getUsername());
+                $this->registerView->reloadPage("/");
             } catch (\Exception $e) {
                 $this->sessionDAL->setInputFeedbackMessage($e->getMessage());
-                $this->registerView->reloadPage();
+                $this->registerView->reloadPage("/?register");
             }
         }
     }

@@ -58,8 +58,8 @@ class Register {
 		return new \Model\User($username, $password);
 	}
 
-	public function reloadPage() {
-		header("Location: /?register");
+	public function reloadPage(string $location) {
+		header("Location: $location");
 	}
 
 

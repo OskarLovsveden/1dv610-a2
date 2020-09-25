@@ -39,12 +39,16 @@ class UserDAL {
             $this->database->getDatabase()
         );
 
+        if ($this->userExists($username)) {
+            throw new \Exception("User exists, pick another username.");
+        }
+
         $sql = "INSERT INTO " . self::$table . " (" . self::$rowUsername . ", " . self::$rowPassword . ") VALUES ('" . $username . "', '" . $password . "')";
 
         if ($connection->query($sql) === TRUE) {
-            echo "New record created successfully";
+            // echo "New record created successfully";
         } else {
-            echo "Error: " . $sql . "<br>" . $connection->error;
+            // echo "Error: " . $sql . "<br>" . $connection->error;
         }
     }
 
@@ -61,7 +65,7 @@ class UserDAL {
         );
 
         if ($this->userExists($username)) {
-            $sql = "SELECT " . self::$rowPassword . " FROM " . self::$table . " WHERE username LIKE BINARY '" . $username . "'";
+            $sql = "SELECT " . self::$rowPassword . " FROM " . self::$table . " WHERE " . self::$rowUsername . " LIKE BINARY '" . $username . "'";
 
             $stmt = $connection->query($sql);
             $stmt = \mysqli_fetch_row($stmt);
