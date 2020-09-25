@@ -27,15 +27,6 @@ class UserDAL {
         } else {
             // Add error message
         }
-
-
-        // if (isset($_SERVER, $_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
-        //     if ($connection->query($sql) === TRUE) {
-        //         // Success
-        //     } else {
-        //         echo "Error creating table: " . $connection->error;
-        //     }
-        // }
     }
 
     public function registerUser(\Model\User $user) {
@@ -61,9 +52,10 @@ class UserDAL {
         }
     }
 
-    public function findExistingUser(\Model\Credentials $credentials) {
+    public function loginUser(\Model\Credentials $credentials) {
         $username = $credentials->getUsername();
         $password = $credentials->getPassword();
+
 
         // Create connection
         $connection = new \mysqli(
@@ -73,25 +65,42 @@ class UserDAL {
             $this->database->getDatabase()
         );
 
-        // Check connection
-        if ($connection->connect_error) {
-            die("Connection failed: " . $connection->connect_error);
-        }
+        if ($this->userExists($username)) {
+            $sql = "SELECT " . self::$rowUsername . ", " . self::$rowPassword . " FROM " . self::$table . " WHERE " . self::$rowUsername . " = '" . $username . "'";
+            $result = $connection->query($sql);
 
-        $sql = "SELECT username, password FROM users WHERE username = '" . $username . "'";
-        $result = $connection->query($sql);
-
-        if ($result->num_rows > 0) {
-            $row = $result->fetch_assoc();
-            if (password_verify($password, $row["password"])) {
-                return new \Model\Username($row["username"]);
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                if (password_verify($password, $row["password"])) {
+                    return new \Model\Username($row["username"]);
+                }
+            } else {
+                throw new \Exception("Wrong name or password");
             }
         } else {
-            // 0 results
+            throw new \Exception("Wrong name or password");
         }
-        $connection->close();
-        // end
+    }
 
-        throw new \Exception("Wrong name or password");
+    private function userExists(string $username): bool {
+        $connection = new \mysqli(
+            $this->database->getHostname(),
+            $this->database->getUsername(),
+            $this->database->getPassword(),
+            $this->database->getDatabase()
+        );
+
+        $query = "SELECT * FROM " . self::$table . " WHERE " . self::$rowUsername . " LIKE BINARY '" . $username . "'";
+        $userExists = 0;
+
+        if ($stmt = $connection->prepare($query)) {
+            $stmt->execute();
+            $stmt->store_result();
+            $userExists = $stmt->num_rows;
+            $stmt->close();
+        }
+
+
+        return $userExists == 1;
     }
 }

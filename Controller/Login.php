@@ -22,7 +22,7 @@ class Login {
             try {
                 $this->loginView->loginFormValidAndSetMessage();
                 $credentials = $this->loginView->getLoginCredentials();
-                $username = $this->userDAL->findExistingUser($credentials);
+                $username = $this->userDAL->loginUser($credentials);
                 $username = $username->getUsername();
 
                 if ($credentials->getKeepUserLoggedIn()) {
