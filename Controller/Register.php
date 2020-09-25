@@ -20,10 +20,12 @@ class Register {
                 $user = $this->registerView->getUserToRegister();
                 $this->userDAL->registerUser($user);
                 $this->sessionDAL->setInputUserValue($user->getUsername());
-                $this->registerView->reloadPage("/");
+                // $this->registerView->reloadPage("/");
+                header("Location: /");
             } catch (\Exception $e) {
                 $this->sessionDAL->setInputFeedbackMessage($e->getMessage());
-                $this->registerView->reloadPage("/?register");
+                // $this->registerView->reloadPage("/?register");
+                header("Location: /?register");
             }
         }
     }
