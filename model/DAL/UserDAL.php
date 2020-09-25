@@ -71,8 +71,8 @@ class UserDAL {
 
             if ($result->num_rows > 0) {
                 $row = $result->fetch_assoc();
-                if (password_verify($password, $row["password"])) {
-                    return new \Model\Username($row["username"]);
+                if (password_verify($password, $row[self::$rowPassword])) {
+                    return new \Model\Username($row[self::$rowUsername]);
                 }
             } else {
                 throw new \Exception("Wrong name or password");
@@ -80,6 +80,7 @@ class UserDAL {
         } else {
             throw new \Exception("Wrong name or password");
         }
+        throw new \Exception("Wrong name or password");
     }
 
     private function userExists(string $username): bool {
