@@ -5,11 +5,46 @@ namespace Model\DAL;
 class UserDAL {
     private $database;
 
+    private static $table = "users";
+    private static $rowUsername = "username";
+    private static $rowPassword = "password";
+
     public function __construct(Database $database) {
         $this->database = $database;
+        $this->createTableIfNotExists();
     }
 
     public function createTableIfNotExists() {
+        $connection = new \mysqli($this->database->getHostname(), $this->database->getUsername(), $this->database->getPassword(), $this->database->getDatabase());
+
+        $sql = "CREATE TABLE IF NOT EXISTS " . self::$table . " (
+            " . self::$rowUsername . " VARCHAR(30) NOT NULL UNIQUE,
+            " . self::$rowPassword . " VARCHAR(60) NOT NULL
+            )";
+
+        if ($connection->query($sql)) {
+            // Add message
+        } else {
+            // Add error message
+        }
+
+
+        // if (isset($_SERVER, $_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
+        //     if ($connection->query($sql) === TRUE) {
+        //         // Success
+        //     } else {
+        //         echo "Error creating table: " . $connection->error;
+        //     }
+        // }
+    }
+
+    public function registerUser(\Model\User $user) {
+        $this->createTableIfNotExists();
+
+        $username = $user->getUsername();
+        $password = password_hash($user->getPassword(), PASSWORD_BCRYPT);
+
+        // Create connection
         $connection = new \mysqli(
             $this->database->getHostname(),
             $this->database->getUsername(),
@@ -17,58 +52,12 @@ class UserDAL {
             $this->database->getDatabase()
         );
 
-        if (isset($_SERVER, $_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
-            if ($connection->connect_error) {
-                die("Connection failed: " . $connection->connect_error);
-            }
-        }
+        $sql = "INSERT INTO " . self::$table . " (" . self::$rowUsername . ", " . self::$rowPassword . ") VALUES ('" . $username . "', '" . $password . "')";
 
-        $sql = "CREATE TABLE IF NOT EXISTS users (
-        id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-        username VARCHAR(30) NOT NULL,
-        password VARCHAR(250) NOT NULL,
-        reg_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        )";
-
-        if (isset($_SERVER, $_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
-            if ($connection->query($sql) === TRUE) {
-                return true;
-            } else {
-                echo "Error creating table: " . $connection->error;
-                return false;
-            }
-        }
-    }
-
-    public function registerUser(\Model\User $user) {
-        if ($this->createTableIfNotExists()) {
-
-            $username = $user->getUsername();
-            $password = password_hash($user->getPassword(), PASSWORD_BCRYPT);
-
-            // Create connection
-            $connection = new \mysqli(
-                $this->database->getHostname(),
-                $this->database->getUsername(),
-                $this->database->getPassword(),
-                $this->database->getDatabase()
-            );
-
-            // Check connection
-            if ($connection->connect_error) {
-                die("Connection failed: " . $connection->connect_error);
-            }
-
-            $sql = "INSERT INTO users (username, password)
-                VALUES ('" . $username . "', '" . $password . "')";
-
-            if ($connection->query($sql) === TRUE) {
-                echo "New record created successfully";
-            } else {
-                echo "Error: " . $sql . "<br>" . $connection->error;
-            }
-
-            $connection->close();
+        if ($connection->query($sql) === TRUE) {
+            echo "New record created successfully";
+        } else {
+            echo "Error: " . $sql . "<br>" . $connection->error;
         }
     }
 
