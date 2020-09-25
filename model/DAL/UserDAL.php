@@ -22,11 +22,7 @@ class UserDAL {
             " . self::$rowPassword . " VARCHAR(60) NOT NULL
             )";
 
-        if ($connection->query($sql)) {
-            // Add message
-        } else {
-            // Add error message
-        }
+        $connection->query($sql);
     }
 
     public function registerUser(\Model\User $user) {
@@ -56,6 +52,7 @@ class UserDAL {
         $username = $credentials->getUsername();
         $password = $credentials->getPassword();
 
+        echo "loginUser";
 
         // Create connection
         $connection = new \mysqli(
@@ -66,21 +63,27 @@ class UserDAL {
         );
 
         if ($this->userExists($username)) {
+            echo "userexists";
             $sql = "SELECT " . self::$rowUsername . ", " . self::$rowPassword . " FROM " . self::$table . " WHERE " . self::$rowUsername . " = '" . $username . "'";
             $result = $connection->query($sql);
 
             if ($result->num_rows > 0) {
+                echo "got result";
+                echo $result;
                 $row = $result->fetch_assoc();
                 if (password_verify($password, $row[self::$rowPassword])) {
                     return new \Model\Username($row[self::$rowUsername]);
                 }
             } else {
                 throw new \Exception("Wrong name or password");
+                exit;
             }
         } else {
             throw new \Exception("Wrong name or password");
+            exit;
         }
         throw new \Exception("Wrong name or password");
+        exit;
     }
 
     private function userExists(string $username): bool {
