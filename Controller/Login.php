@@ -22,8 +22,8 @@ class Login {
             try {
                 $this->loginView->loginFormValidAndSetMessage();
                 $credentials = $this->loginView->getLoginCredentials();
-                $username = $this->userDAL->loginUser($credentials);
-                $username = $username->getUsername();
+                $this->userDAL->loginUser($credentials);
+                $username = $credentials->getUsername();
 
                 if ($credentials->getKeepUserLoggedIn()) {
 

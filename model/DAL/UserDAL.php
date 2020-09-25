@@ -52,8 +52,6 @@ class UserDAL {
         $username = $credentials->getUsername();
         $password = $credentials->getPassword();
 
-        echo "loginUser";
-
         // Create connection
         $connection = new \mysqli(
             $this->database->getHostname(),
@@ -63,30 +61,17 @@ class UserDAL {
         );
 
         if ($this->userExists($username)) {
-            echo "userexists";
-            $sql = "SELECT " . self::$rowUsername . ", " . self::$rowPassword . " FROM " . self::$table . " WHERE " . self::$rowUsername . " = '" . $username . "'";
-            $result = $connection->query($sql);
+            $sql = "SELECT " . self::$rowPassword . " FROM " . self::$table . " WHERE username LIKE BINARY '" . $username . "'";
 
-            if ($result->num_rows > 0) {
-                echo "got result";
-                echo $result;
-                $row = $result->fetch_assoc();
-                if (password_verify($password, $row[self::$rowPassword])) {
-                    return new \Model\Username($row[self::$rowUsername]);
-                }
-            } else {
+            $stmt = $connection->query($sql);
+            $stmt = \mysqli_fetch_row($stmt);
+
+            if (!\password_verify($password, $stmt[0])) {
                 throw new \Exception("Wrong name or password");
-                echo "inner else";
-                exit;
             }
         } else {
             throw new \Exception("Wrong name or password");
-            echo "outer else";
-            exit;
         }
-        throw new \Exception("Wrong name or password");
-        echo "function";
-        exit;
     }
 
     private function userExists(string $username): bool {
