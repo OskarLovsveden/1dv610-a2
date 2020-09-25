@@ -76,13 +76,16 @@ class UserDAL {
                 }
             } else {
                 throw new \Exception("Wrong name or password");
+                echo "inner else";
                 exit;
             }
         } else {
             throw new \Exception("Wrong name or password");
+            echo "outer else";
             exit;
         }
         throw new \Exception("Wrong name or password");
+        echo "function";
         exit;
     }
 
