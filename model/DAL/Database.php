@@ -3,6 +3,8 @@
 namespace Model\DAL;
 
 class Database {
+    private $url;
+    private $dbparts;
     private $hostname;
     private $username;
     private $password;
@@ -15,13 +17,13 @@ class Database {
             $this->password = "users";
             $this->database = "users";
         } else {
-            $url = getenv('JAWSDB_URL');
-            $dbparts = parse_url($url);
+            $this->url = getenv('JAWSDB_URL');
+            $this->dbparts = parse_url($this->url);
 
-            $this->hostname = $dbparts['host'];
-            $this->username = $dbparts['user'];
-            $this->password = $dbparts['pass'];
-            $this->database = ltrim($dbparts['path'], '/');
+            $this->hostname = $this->dbparts['host'];
+            $this->username = $this->dbparts['user'];
+            $this->password = $this->dbparts['pass'];
+            $this->database = ltrim($this->dbparts['path'], '/');
         }
     }
 
