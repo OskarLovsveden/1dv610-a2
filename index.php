@@ -23,11 +23,10 @@ require_once('model/DAL/SessionDAL.php');
 require_once('model/DAL/UserDAL.php');
 
 // Create DAL
-$cookieDAL = new \Model\DAL\CookieDAL();
-$sessionDAL = new \Model\DAL\SessionDAL();
-
 $database = new \Model\DAL\Database();
 $userDAL = new \Model\DAL\UserDAL($database);
+$cookieDAL = new \Model\DAL\CookieDAL($database);
+$sessionDAL = new \Model\DAL\SessionDAL();
 
 // Create view objects
 $loginView = new \View\Login($cookieDAL, $sessionDAL);
@@ -44,6 +43,9 @@ $sameBrowser = $sessionDAL->userBrowserValid();
 
 $userLoggedIn = ($sessionExists || $cookieExists) && $sameBrowser;
 
+// $activeSessOrCookie = $sessionExists || $cookieExists;
+// $userLoggedInTwoLine = $activeSessOrCookie && $sameBrowser;
+
 // if ($sessionExists || $cookieExists) {
 if ($userLoggedIn) {
     $loginController->doLogout();
@@ -59,11 +61,5 @@ $layoutView->render($userLoggedIn, $loginView, $registerView, $dateTimeView);
 
 // TEMP
 if (isset($_SERVER, $_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
-    /* Development */
-    // var_dump($_SESSION);
-    var_dump($_SESSION['Model\\DAL\\SessionDAL::userBrowser']);
-    echo "<br/>";
-    var_dump($_SERVER['HTTP_USER_AGENT']);
-    echo "<br/>";
-    var_dump("Same browser: ", $sameBrowser);
+    // development
 }

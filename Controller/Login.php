@@ -26,20 +26,14 @@ class Login {
                 $username = $credentials->getUsername();
 
                 if ($credentials->getKeepUserLoggedIn()) {
-
-                    // TODO: Figure out this tempcode
-                    $str = rand();
-                    $password = md5($str);
-                    // end
-
-                    $this->cookieDAL->setUserCookies($username, $password);
+                    $this->cookieDAL->setUserCookiesAndSaveToDatabase($username);
+                    // $this->cookieDAL->saveUserCookie();
                     $this->sessionDAL->setInputFeedbackMessage("Welcome and you will be remembered");
                 } else {
                     $this->sessionDAL->setInputFeedbackMessage("Welcome");
                 }
 
                 $this->sessionDAL->setUserSession($username);
-                $this->sessionDAL->setUserBrowser();
                 $this->loginView->reloadPage();
             } catch (\Exception $e) {
                 $this->sessionDAL->setInputFeedbackMessage($e->getMessage());
