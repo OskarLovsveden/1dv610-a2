@@ -61,8 +61,8 @@ class Login {
 		return isset($_POST[self::$login]);
 	}
 
-	public function loginFormValidAndSetMessage() {
-		$this->sessionDAL->setInputUserValue($this->getRequestUserName());
+	public function validateLoginForm() {
+		// $this->sessionDAL->setInputUserValue($this->getRequestUserName());
 
 		if (!$this->getRequestUserName()) {
 			throw new \Exception("Username is missing");

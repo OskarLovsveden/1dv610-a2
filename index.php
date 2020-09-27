@@ -39,9 +39,10 @@ $registerController = new \Controller\Register($registerView, $userDAL, $session
 
 $sessionExists = $sessionDAL->isUserSessionActive();
 $cookieExists = $cookieDAL->isUserCookieActive();
-$sameBrowser = $sessionDAL->userBrowserValid();
+$validBrowser = $cookieDAL->userBrowserValid();
 
-$userLoggedIn = ($sessionExists || $cookieExists) && $sameBrowser;
+$userLoggedIn = ($sessionExists || $cookieExists) && $validBrowser;
+// $userLoggedIn = ($sessionExists || $cookieExists);
 
 // $activeSessOrCookie = $sessionExists || $cookieExists;
 // $userLoggedInTwoLine = $activeSessOrCookie && $sameBrowser;

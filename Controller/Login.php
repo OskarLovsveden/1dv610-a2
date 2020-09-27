@@ -20,14 +20,15 @@ class Login {
     public function doLogin() {
         if ($this->loginView->userWantsToLogin()) {
             try {
-                $this->loginView->loginFormValidAndSetMessage();
+                $this->loginView->validateLoginForm();
                 $credentials = $this->loginView->getLoginCredentials();
-                $this->userDAL->loginUser($credentials);
                 $username = $credentials->getUsername();
+                $this->sessionDAL->setInputUserValue($username);
+                $this->userDAL->loginUser($credentials);
 
                 if ($credentials->getKeepUserLoggedIn()) {
-                    $this->cookieDAL->setUserCookiesAndSaveToDatabase($username);
-                    // $this->cookieDAL->saveUserCookie();
+                    $this->cookieDAL->setUserCookies($username);
+                    $this->cookieDAL->saveUserCookie();
                     $this->sessionDAL->setInputFeedbackMessage("Welcome and you will be remembered");
                 } else {
                     $this->sessionDAL->setInputFeedbackMessage("Welcome");

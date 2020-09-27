@@ -5,9 +5,11 @@ namespace Model\DAL;
 class CookieDAL {
 
     private $database;
+    private $cookieUsername;
+    private $cookiePassword;
 
-    private static $cookieName = 'LoginView::CookieName';
-    private static $cookiePassword = 'LoginView::CookiePassword';
+    private static $cookieNameKey = 'LoginView::CookieName';
+    private static $cookiePasswordKey = 'LoginView::CookiePassword';
     private static $table = 'cookies';
     private static $rowUsername = 'cookieUsername';
     private static $rowPassword = 'cookiePassword';
@@ -39,14 +41,9 @@ class CookieDAL {
     public function saveUserCookie() {
         $this->createTableIfNotExists();
 
-        $username = $_COOKIE[self::$cookieName];
-        $password = $_COOKIE[self::$cookiePassword];
+        $username = $this->cookieUsername;
+        $password = $this->cookiePassword;
         $browser = $_SERVER[self::$userAgent];
-
-        var_dump($username);
-        echo "<br/>";
-        var_dump($password);
-        exit;
 
         // Create connection
         $connection = new \mysqli(
@@ -56,21 +53,19 @@ class CookieDAL {
             $this->database->getDatabase()
         );
 
-        $sql = "";
+        $sql = "REPLACE INTO " . self::$table . " (" . self::$rowUsername . ", " . self::$rowPassword . ", " . self::$rowBrowser . ") VALUES ('" . $username . "', '" . $password . "', '" . $browser . "')";
 
-        if ($this->userCookieExists($username)) {
-            $sql = $sql = "UPDATE " . self::$table . " SET " . self::$rowBrowser . "='" . $browser . "' WHERE " . self::$rowUsername . "='" . $username . "'";
-        } else {
-            $sql = "INSERT INTO " . self::$table . " (" . self::$rowUsername . ", " . self::$rowPassword . ", " . self::$rowBrowser . ") VALUES ('" . $username . "', '" . $password . "', '" . $browser . "')";
-        }
+        // if ($this->userCookieExists($username)) {
+        //     $sql = "REPLACE INTO " . self::$table . " (" . self::$rowUsername . ", " . self::$rowPassword . ", " . self::$rowBrowser . ") VALUES ('" . $username . "', '" . $password . "', '" . $browser . "')";
+        // } else {
+        //     $sql = "INSERT INTO " . self::$table . " (" . self::$rowUsername . ", " . self::$rowPassword . ", " . self::$rowBrowser . ") VALUES ('" . $username . "', '" . $password . "', '" . $browser . "')";
+        // }
 
         $connection->query($sql);
         $connection->close();
     }
 
-    public function userCookieExists() {
-        $username = $_COOKIE[self::$cookieName];
-        // $password = $_COOKIE[self::$cookiePassword];
+    public function getUserCookie($username) {
 
         $connection = new \mysqli(
             $this->database->getHostname(),
@@ -82,27 +77,44 @@ class CookieDAL {
         $sql = "SELECT * FROM " . self::$table . " WHERE " . self::$rowUsername . " LIKE BINARY '" . $username . "' LIMIT 1";
 
         $result = mysqli_query($connection, $sql);
-        $row = mysqli_fetch_assoc($result);
 
-        $connection->close();
+        if ($result === false) {
+            throw new \Exception("No such saved Cookie");
+        }
+
+        $row = mysqli_fetch_assoc($result);
+        return $row;
+        // $connection->close();
     }
 
-    public function setUserCookiesAndSaveToDatabase($cookieUserName) {
+    public function setUserCookies($cookieUsername) {
         $str = rand();
         $cookiePassword = md5($str);
 
-        setcookie(self::$cookieName, $cookieUserName, time() + (86400 * 30), "/");
-        setcookie(self::$cookiePassword, $cookiePassword, time() + (86400 * 30), "/");
+        setcookie(self::$cookieNameKey, $cookieUsername, time() + (86400 * 30), "/");
+        setcookie(self::$cookiePasswordKey, $cookiePassword, time() + (86400 * 30), "/");
 
-        $this->saveUserCookie();
+        $this->cookieUsername = $cookieUsername;
+        $this->cookiePassword = $cookiePassword;
     }
 
     public function unsetUserCookies() {
-        setcookie(self::$cookieName, "", time() - 3600);
-        setcookie(self::$cookiePassword, "", time() - 3600);
+        setcookie(self::$cookieNameKey, "", time() - 3600);
+        setcookie(self::$cookiePasswordKey, "", time() - 3600);
     }
 
     public function isUserCookieActive() {
-        return isset($_COOKIE[self::$cookieName]);
+        return isset($_COOKIE[self::$cookieNameKey]);
+    }
+
+    public function userBrowserValid() {
+        $userCookie = $this->getUserCookie("Admin");
+        // var_dump($userCookie["cookieBrowser"]);
+        // exit;
+
+        if ($userCookie["cookieBrowser"] === $_SERVER['HTTP_USER_AGENT']) {
+            return true;
+        }
+        return false;
     }
 }

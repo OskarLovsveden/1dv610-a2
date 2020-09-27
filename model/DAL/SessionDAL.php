@@ -85,14 +85,14 @@ class SessionDAL {
     return "";
   }
 
-  public function setUserBrowser() {
-    $_SESSION[self::$userBrowser] = $_SERVER['HTTP_USER_AGENT'];
-  }
+  // public function setUserBrowser() {
+  //   $_SESSION[self::$userBrowser] = $_SERVER['HTTP_USER_AGENT'];
+  // }
 
-  public function userBrowserValid(): bool {
-    if ($_SESSION[self::$userBrowser] === $_SERVER['HTTP_USER_AGENT']) {
-      return true;
-    }
-    return false;
-  }
+  // public function userBrowserValid(): bool {
+  //   if ($_SESSION[self::$userBrowser] === $_SERVER['HTTP_USER_AGENT']) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }
