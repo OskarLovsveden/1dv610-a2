@@ -24,9 +24,9 @@ require_once('model/DAL/UserDAL.php');
 
 // Create DAL
 $database = new \Model\DAL\Database();
-$userDAL = new \Model\DAL\UserDAL($database);
-$cookieDAL = new \Model\DAL\CookieDAL($database);
 $sessionDAL = new \Model\DAL\SessionDAL();
+$cookieDAL = new \Model\DAL\CookieDAL($database, $sessionDAL);
+$userDAL = new \Model\DAL\UserDAL($database);
 
 // Create view objects
 $loginView = new \View\Login($cookieDAL, $sessionDAL);

@@ -5,6 +5,8 @@ namespace Model\DAL;
 class CookieDAL {
 
     private $database;
+    private $sessionDAL;
+
     private $cookieUsername;
     private $cookiePassword;
 
@@ -16,7 +18,8 @@ class CookieDAL {
     private static $rowBrowser = 'cookieBrowser';
     private static $userAgent = 'HTTP_USER_AGENT';
 
-    public function __construct(Database $database) {
+    public function __construct(Database $database, SessionDAL $sessionDAL) {
+        $this->sessionDAL = $sessionDAL;
         $this->database = $database;
         $this->createTableIfNotExists();
     }
@@ -100,13 +103,16 @@ class CookieDAL {
         $validPassword = $userCookie[self::$rowPassword] === $_COOKIE[self::$cookiePasswordKey];
         $cookieSet = isset($_COOKIE[self::$cookieNameKey]);
 
+        if (!$validPassword && $cookieSet) {
+            $this->sessionDAL->setInputFeedbackMessage("Wrong information in cookies");
+            $this->unsetUserCookies();
+        }
+
         if ($validPassword && $cookieSet) {
             return true;
         }
-        return false;
 
-        // var_dump("Valid pass: ", $validPassword, "<br/>", "Cookie set: ", $cookieSet);
-        // exit;
+        return false;
 
         // return isset($_COOKIE[self::$cookieNameKey]);
     }
