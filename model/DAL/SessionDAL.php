@@ -72,6 +72,10 @@ class SessionDAL {
     return "";
   }
 
+  public function flipFeedbackVisibilityBool() {
+    $this->sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
+  }
+
   public function setUserBrowser() {
     $_SESSION[self::$userBrowser] = $_SERVER[self::$userAgent];
   }

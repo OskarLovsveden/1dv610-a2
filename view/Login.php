@@ -31,8 +31,7 @@ class Login {
 	 * @return  void BUT writes to standard output and cookies!
 	 */
 	public function response(bool $isLoggedIn) {
-		$message = $this->sessionDAL->getInputFeedbackMessage(); // Using variable
-		// $message = $this->sessionDAL->displayInputFeedback(); // Using array
+		$message = $this->sessionDAL->getInputFeedbackMessage();
 
 		$sessionExists = $this->sessionDAL->isUserSessionActive();
 		$cookieExists = $this->cookieDAL->isUserCookieActive();

@@ -37,8 +37,10 @@ $layoutView = new \View\Layout();
 $loginController = new \Controller\Login($loginView, $cookieDAL, $sessionDAL, $userDAL);
 $registerController = new \Controller\Register($registerView, $userDAL, $sessionDAL);
 
+$cookieDAL->isUserCookieValid();
+
 $sessionExists = $sessionDAL->isUserSessionActive();
-$cookieExists = $cookieDAL->isUserCookieActive();
+$cookieExists = $cookieDAL->isUserCookieValid();
 $validBrowser = $cookieDAL->userBrowserValid();
 
 $userLoggedIn = $sessionExists || $cookieExists && $validBrowser;

@@ -103,18 +103,23 @@ class CookieDAL {
         $validPassword = $userCookie[self::$rowPassword] === $_COOKIE[self::$cookiePasswordKey];
         $cookieSet = isset($_COOKIE[self::$cookieNameKey]);
 
-        if (!$validPassword && $cookieSet) {
-            $this->sessionDAL->setInputFeedbackMessage("Wrong information in cookies");
-            $this->unsetUserCookies();
-        }
-
         if ($validPassword && $cookieSet) {
             return true;
         }
 
         return false;
+    }
 
-        // return isset($_COOKIE[self::$cookieNameKey]);
+    public function isUserCookieValid() {
+        $userCookie = $this->getUserCookie($_COOKIE[self::$cookieNameKey]);
+        $validPassword = $userCookie[self::$rowPassword] === $_COOKIE[self::$cookiePasswordKey];
+        $cookieSet = isset($_COOKIE[self::$cookieNameKey]);
+
+        if (!$validPassword && $cookieSet) {
+            $this->sessionDAL->setInputFeedbackMessage("Wrong information in cookies");
+            $this->sessionDAL->flipFeedbackVisibilityBool();
+            $this->unsetUserCookies();
+        }
     }
 
     public function userBrowserValid() {
