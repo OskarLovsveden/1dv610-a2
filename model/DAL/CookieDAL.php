@@ -84,7 +84,6 @@ class CookieDAL {
 
         $row = mysqli_fetch_assoc($result);
         return $row;
-        // $connection->close();
     }
 
     public function setUserCookies($cookieUsername) {
@@ -108,11 +107,9 @@ class CookieDAL {
     }
 
     public function userBrowserValid() {
-        $userCookie = $this->getUserCookie("Admin");
-        // var_dump($userCookie["cookieBrowser"]);
-        // exit;
+        $userCookie = $this->getUserCookie($_COOKIE[self::$cookieNameKey]);
 
-        if ($userCookie["cookieBrowser"] === $_SERVER['HTTP_USER_AGENT']) {
+        if ($userCookie[self::$rowBrowser] === $_SERVER[self::$userAgent]) {
             return true;
         }
         return false;

@@ -31,7 +31,6 @@ class UserDAL {
         $username = $user->getUsername();
         $password = password_hash($user->getPassword(), PASSWORD_BCRYPT);
 
-        // Create connection
         $connection = new \mysqli(
             $this->database->getHostname(),
             $this->database->getUsername(),
@@ -45,18 +44,13 @@ class UserDAL {
 
         $sql = "INSERT INTO " . self::$table . " (" . self::$rowUsername . ", " . self::$rowPassword . ") VALUES ('" . $username . "', '" . $password . "')";
 
-        if ($connection->query($sql) === TRUE) {
-            // echo "New record created successfully";
-        } else {
-            // echo "Error: " . $sql . "<br>" . $connection->error;
-        }
+        $connection->query($sql);
     }
 
     public function loginUser(\Model\Credentials $credentials) {
         $username = $credentials->getUsername();
         $password = $credentials->getPassword();
 
-        // Create connection
         $connection = new \mysqli(
             $this->database->getHostname(),
             $this->database->getUsername(),

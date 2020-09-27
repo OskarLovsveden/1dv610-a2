@@ -30,7 +30,7 @@ $sessionDAL = new \Model\DAL\SessionDAL();
 
 // Create view objects
 $loginView = new \View\Login($cookieDAL, $sessionDAL);
-$registerView = new \View\Register($cookieDAL, $sessionDAL);
+$registerView = new \View\Register($sessionDAL);
 $dateTimeView = new \View\DateTime();
 $layoutView = new \View\Layout();
 
@@ -41,13 +41,8 @@ $sessionExists = $sessionDAL->isUserSessionActive();
 $cookieExists = $cookieDAL->isUserCookieActive();
 $validBrowser = $cookieDAL->userBrowserValid();
 
-$userLoggedIn = ($sessionExists || $cookieExists) && $validBrowser;
-// $userLoggedIn = ($sessionExists || $cookieExists);
+$userLoggedIn = $sessionExists || $cookieExists && $validBrowser;
 
-// $activeSessOrCookie = $sessionExists || $cookieExists;
-// $userLoggedInTwoLine = $activeSessOrCookie && $sameBrowser;
-
-// if ($sessionExists || $cookieExists) {
 if ($userLoggedIn) {
     $loginController->doLogout();
 } else {

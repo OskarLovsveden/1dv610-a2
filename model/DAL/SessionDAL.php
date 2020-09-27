@@ -5,17 +5,11 @@ namespace Model\DAL;
 class SessionDAL {
   private static $sessionInputFeedbackMessage = 'Model\\DAL\\SessionDAL::sessionInputFeedbackMessage';
   private static $sessionInputUserValue = 'Model\\DAL\\SessionDAL::sessionInputUserValue';
-  private static $userBrowser = 'Model\\DAL\\SessionDAL::userBrowser';
   private static $activeUser = 'Model\\DAL\\SessionDAL::activeUser';
+  private static $userBrowser = 'Model\\DAL\\SessionDAL::userBrowser';
+  private static $userAgent = 'HTTP_USER_AGENT';
 
   private $sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
-
-  // public function startSession() {
-  //   session_start();
-  //   if ($this->sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest) {
-  //     $_SESSION[self::$sessionInputFeedbackMessage] = array();
-  //   }
-  // }
 
   public function setInputUserValue($username) {
     $_SESSION[self::$sessionInputUserValue] = $username;
@@ -31,7 +25,9 @@ class SessionDAL {
 
   public function isUserSessionActive(): bool {
     if (isset($_SESSION[self::$activeUser]) && !empty($_SESSION[self::$activeUser])) {
-      return true;
+      if ($this->userBrowserValid()) {
+        return true;
+      }
     }
 
     return false;
@@ -50,22 +46,13 @@ class SessionDAL {
   }
 
   public function setInputFeedbackMessage(string $message) {
-    $_SESSION[self::$sessionInputFeedbackMessage] = $message; //Using variable
-
-    // Using array
-    // $messageArray = array();
-    // $messageArray = $_SESSION[self::$sessionInputFeedbackMessage];
-    // array_push($messageArray, $message);
-    // $_SESSION[self::$sessionInputFeedbackMessage] = $messageArray;
-
-    // Make sure the message survives the first request since it is removed in getInputFeedbackMessage
+    $_SESSION[self::$sessionInputFeedbackMessage] = $message;
     $this->sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = true;
   }
 
   public function unsetInputFeedbackMessage() {
     if (isset($_SESSION[self::$sessionInputFeedbackMessage])) {
-      unset($_SESSION[self::$sessionInputFeedbackMessage]); // Using variable
-      // $_SESSION[self::$sessionInputFeedbackMessage] = array(); // Using array
+      unset($_SESSION[self::$sessionInputFeedbackMessage]);
     } else {
       throw new \Exception("Requires InputFeedbackMessage session to unset it");
     }
@@ -85,14 +72,14 @@ class SessionDAL {
     return "";
   }
 
-  // public function setUserBrowser() {
-  //   $_SESSION[self::$userBrowser] = $_SERVER['HTTP_USER_AGENT'];
-  // }
+  public function setUserBrowser() {
+    $_SESSION[self::$userBrowser] = $_SERVER[self::$userAgent];
+  }
 
-  // public function userBrowserValid(): bool {
-  //   if ($_SESSION[self::$userBrowser] === $_SERVER['HTTP_USER_AGENT']) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  public function userBrowserValid(): bool {
+    if ($_SESSION[self::$userBrowser] === $_SERVER[self::$userAgent]) {
+      return true;
+    }
+    return false;
+  }
 }

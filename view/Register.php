@@ -11,11 +11,9 @@ class Register {
 
 	private $registerFormErrors = array();
 
-	private $cookieDAL;
 	private $sessionDAL;
 
-	public function __construct(\Model\DAL\CookieDAL $cookieDAL, \Model\DAL\SessionDAL $sessionDAL) {
-		$this->cookieDAL = $cookieDAL;
+	public function __construct(\Model\DAL\SessionDAL $sessionDAL) {
 		$this->sessionDAL = $sessionDAL;
 	}
 
@@ -57,11 +55,6 @@ class Register {
 
 		return new \Model\User($username, $password);
 	}
-
-	public function reloadPage(string $location) {
-		header("Location: $location");
-	}
-
 
 	/**
 	 * Create HTTP response

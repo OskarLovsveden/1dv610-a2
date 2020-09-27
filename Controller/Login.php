@@ -24,7 +24,6 @@ class Login {
                 $this->loginView->validateLoginForm();
                 $credentials = $this->loginView->getLoginCredentials();
                 $username = $credentials->getUsername();
-                // $this->sessionDAL->setInputUserValue($username);
                 $this->userDAL->loginUser($credentials);
 
                 if ($credentials->getKeepUserLoggedIn()) {
@@ -36,6 +35,7 @@ class Login {
                 }
 
                 $this->sessionDAL->setUserSession($username);
+                $this->sessionDAL->setUserBrowser();
                 $this->loginView->reloadPage();
             } catch (\Exception $e) {
                 $this->sessionDAL->setInputFeedbackMessage($e->getMessage());

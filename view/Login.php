@@ -58,7 +58,6 @@ class Login {
 	}
 
 	public function userWantsToLogin(): bool {
-		// $this->sessionDAL->setInputUserValue($this->getRequestUserName());
 		return isset($_POST[self::$login]);
 	}
 
