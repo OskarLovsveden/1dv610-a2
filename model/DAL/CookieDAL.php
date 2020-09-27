@@ -45,7 +45,6 @@ class CookieDAL {
         $password = $this->cookiePassword;
         $browser = $_SERVER[self::$userAgent];
 
-        // Create connection
         $connection = new \mysqli(
             $this->database->getHostname(),
             $this->database->getUsername(),
@@ -54,12 +53,6 @@ class CookieDAL {
         );
 
         $sql = "REPLACE INTO " . self::$table . " (" . self::$rowUsername . ", " . self::$rowPassword . ", " . self::$rowBrowser . ") VALUES ('" . $username . "', '" . $password . "', '" . $browser . "')";
-
-        // if ($this->userCookieExists($username)) {
-        //     $sql = "REPLACE INTO " . self::$table . " (" . self::$rowUsername . ", " . self::$rowPassword . ", " . self::$rowBrowser . ") VALUES ('" . $username . "', '" . $password . "', '" . $browser . "')";
-        // } else {
-        //     $sql = "INSERT INTO " . self::$table . " (" . self::$rowUsername . ", " . self::$rowPassword . ", " . self::$rowBrowser . ") VALUES ('" . $username . "', '" . $password . "', '" . $browser . "')";
-        // }
 
         $connection->query($sql);
         $connection->close();
@@ -103,7 +96,19 @@ class CookieDAL {
     }
 
     public function isUserCookieActive() {
-        return isset($_COOKIE[self::$cookieNameKey]);
+        $userCookie = $this->getUserCookie($_COOKIE[self::$cookieNameKey]);
+        $validPassword = $userCookie[self::$rowPassword] === $_COOKIE[self::$cookiePasswordKey];
+        $cookieSet = isset($_COOKIE[self::$cookieNameKey]);
+
+        if ($validPassword && $cookieSet) {
+            return true;
+        }
+        return false;
+
+        // var_dump("Valid pass: ", $validPassword, "<br/>", "Cookie set: ", $cookieSet);
+        // exit;
+
+        // return isset($_COOKIE[self::$cookieNameKey]);
     }
 
     public function userBrowserValid() {
