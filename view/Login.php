@@ -58,11 +58,12 @@ class Login {
 	}
 
 	public function userWantsToLogin(): bool {
+		// $this->sessionDAL->setInputUserValue($this->getRequestUserName());
 		return isset($_POST[self::$login]);
 	}
 
 	public function validateLoginForm() {
-		// $this->sessionDAL->setInputUserValue($this->getRequestUserName());
+		$this->sessionDAL->setInputUserValue($this->getRequestUserName());
 
 		if (!$this->getRequestUserName()) {
 			throw new \Exception("Username is missing");

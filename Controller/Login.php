@@ -18,12 +18,13 @@ class Login {
     }
 
     public function doLogin() {
+
         if ($this->loginView->userWantsToLogin()) {
             try {
                 $this->loginView->validateLoginForm();
                 $credentials = $this->loginView->getLoginCredentials();
                 $username = $credentials->getUsername();
-                $this->sessionDAL->setInputUserValue($username);
+                // $this->sessionDAL->setInputUserValue($username);
                 $this->userDAL->loginUser($credentials);
 
                 if ($credentials->getKeepUserLoggedIn()) {
