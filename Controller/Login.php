@@ -39,6 +39,7 @@ class Login {
                 }
 
                 $this->sessionDAL->setUserSession($username);
+                $this->sessionDAL->setUserBrowser();
                 $this->loginView->reloadPage();
             } catch (\Exception $e) {
                 $this->sessionDAL->setInputFeedbackMessage($e->getMessage());

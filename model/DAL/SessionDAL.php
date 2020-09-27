@@ -5,6 +5,7 @@ namespace Model\DAL;
 class SessionDAL {
   private static $sessionInputFeedbackMessage = 'Model\\DAL\\SessionDAL::sessionInputFeedbackMessage';
   private static $sessionInputUserValue = 'Model\\DAL\\SessionDAL::sessionInputUserValue';
+  private static $userBrowser = 'Model\\DAL\\SessionDAL::userBrowser';
   private static $activeUser = 'Model\\DAL\\SessionDAL::activeUser';
 
   private $sessionInputFeedbackMessageWasSetAndShouldNotBeRemovedDuringThisRequest = false;
@@ -84,15 +85,14 @@ class SessionDAL {
     return "";
   }
 
-  // public function displayInputFeedback() {
-  //   $message = "";
+  public function setUserBrowser() {
+    $_SESSION[self::$userBrowser] = $_SERVER['HTTP_USER_AGENT'];
+  }
 
-  //   $messageArray = $this->getInputFeedbackMessage();
-  //   foreach ($messageArray as $value) {
-  //     if (strlen($message) != 0) {
-  //       $message .= "</br>";
-  //     }
-  //     $message .= $value;
-  //   }
-  // }
+  public function userBrowserValid(): bool {
+    if ($_SESSION[self::$userBrowser] === $_SERVER['HTTP_USER_AGENT']) {
+      return true;
+    }
+    return false;
+  }
 }

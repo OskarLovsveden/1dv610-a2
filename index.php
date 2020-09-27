@@ -40,8 +40,12 @@ $registerController = new \Controller\Register($registerView, $userDAL, $session
 
 $sessionExists = $sessionDAL->isUserSessionActive();
 $cookieExists = $cookieDAL->isUserCookieActive();
+$sameBrowser = $sessionDAL->userBrowserValid();
 
-if ($sessionExists || $cookieExists) {
+$userLoggedIn = ($sessionExists || $cookieExists) && $sameBrowser;
+
+// if ($sessionExists || $cookieExists) {
+if ($userLoggedIn) {
     $loginController->doLogout();
 } else {
     if (isset($_GET["register"])) {
@@ -51,10 +55,15 @@ if ($sessionExists || $cookieExists) {
     }
 }
 
-$layoutView->render(($sessionExists || $cookieExists), $loginView, $registerView, $dateTimeView);
+$layoutView->render($userLoggedIn, $loginView, $registerView, $dateTimeView);
 
 // TEMP
 if (isset($_SERVER, $_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] == 'localhost') {
     /* Development */
-    var_dump($_SESSION);
+    // var_dump($_SESSION);
+    var_dump($_SESSION['Model\\DAL\\SessionDAL::userBrowser']);
+    echo "<br/>";
+    var_dump($_SERVER['HTTP_USER_AGENT']);
+    echo "<br/>";
+    var_dump("Same browser: ", $sameBrowser);
 }
